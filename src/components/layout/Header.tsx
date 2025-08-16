@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Music, Phone } from "lucide-react";
+import { Menu, X, Music, Phone, Mail } from "lucide-react";
 
 export default function Header() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -20,6 +20,7 @@ export default function Header() {
 
 	const navigation = [
 		{ name: "Home", href: "/" },
+		{ name: "About", href: "/about" },
 		{
 			name: "Services",
 			href: "/services",
@@ -45,13 +46,13 @@ export default function Header() {
 				}`}>
 				<nav className="max-w-7xl mx-auto px-6 py-4">
 					<div className="flex justify-between items-center">
-						{/* Logo */}
+						{/* Left: Logo */}
 						<Link href="/" className="flex items-center gap-3 group">
-							<div className="w-20 h-20 bg-yellow-400 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-yellow-400/25">
+							<div className="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-yellow-400/25">
 								<img
 									src="/logo.png"
 									alt="Black Tie Events"
-									className="h-15 w-15 rounded-full object-contain"
+									className="h-10 w-10 rounded-full object-contain"
 								/>
 							</div>
 							<div>
@@ -64,7 +65,7 @@ export default function Header() {
 							</div>
 						</Link>
 
-						{/* Desktop Navigation */}
+						{/* Center: Navigation */}
 						<div className="hidden lg:flex items-center space-x-8">
 							{navigation.map((item) => (
 								<div key={item.name} className="relative group">
@@ -95,14 +96,23 @@ export default function Header() {
 							))}
 						</div>
 
-						{/* Call Button */}
+						{/* Right: Contact Icons Only */}
 						<div className="hidden lg:flex items-center gap-4">
-							<Link
-								href="/services/book-a-call"
-								className="bg-yellow-400 text-black px-6 py-2 rounded-full font-bold hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105 flex items-center gap-2">
-								<Phone className="w-4 h-4" />
-								Book Now
-							</Link>
+							{/* Email Icon */}
+							<a
+								href="mailto:blacktieevent@gmail.com"
+								className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white hover:bg-blue-500 transition-all duration-300 transform hover:scale-110 shadow-lg group"
+								title="Email Us">
+								<Mail className="w-5 h-5 group-hover:scale-110 transition-transform" />
+							</a>
+
+							{/* Call Icon */}
+							<a
+								href="tel:+19092681246"
+								className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white hover:bg-green-500 transition-all duration-300 transform hover:scale-110 shadow-lg group"
+								title="Call Us">
+								<Phone className="w-5 h-5 group-hover:scale-110 transition-transform" />
+							</a>
 						</div>
 
 						{/* Mobile Menu Button */}
@@ -165,12 +175,45 @@ export default function Header() {
 								</div>
 							))}
 
-							<Link
-								href="/services/book-a-call"
-								onClick={() => setIsOpen(false)}
-								className="block w-full bg-yellow-400 text-black text-center px-6 py-3 rounded-full font-bold hover:bg-yellow-300 transition-all duration-300">
-								Book Now
-							</Link>
+							{/* Action Buttons */}
+							<div className="space-y-3">
+								<div className="flex gap-2">
+									<a
+										href="mailto:blacktieevent@gmail.com"
+										onClick={() => setIsOpen(false)}
+										className="flex-1 bg-blue-500 text-white text-center px-4 py-3 rounded-full font-bold hover:bg-blue-400 transition-all duration-300 flex items-center justify-center gap-2">
+										<Mail className="w-4 h-4" />
+										Email
+									</a>
+									<a
+										href="tel:+19092681246"
+										onClick={() => setIsOpen(false)}
+										className="flex-1 bg-green-500 text-white text-center px-4 py-3 rounded-full font-bold hover:bg-green-400 transition-all duration-300 flex items-center justify-center gap-2">
+										<Phone className="w-4 h-4" />
+										Call
+									</a>
+								</div>
+								<Link
+									href="/services/book-a-call"
+									onClick={() => setIsOpen(false)}
+									className="block w-full bg-yellow-400 text-black text-center px-6 py-3 rounded-full font-bold hover:bg-yellow-300 transition-all duration-300">
+									📅 Book Your Event
+								</Link>
+							</div>
+
+							{/* Mobile Contact Info */}
+							<div className="pt-6 border-t border-gray-700 text-center">
+								<a
+									href="tel:+19092681246"
+									className="block text-lg text-yellow-400 font-semibold hover:text-yellow-300 transition-colors mb-2">
+									📞 909-268-1246
+								</a>
+								<a
+									href="mailto:blacktieevent@gmail.com"
+									className="block text-sm text-gray-400 hover:text-yellow-400 transition-colors">
+									📧 blacktieevent@gmail.com
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>
