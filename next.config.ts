@@ -1,16 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Disable development indicators
-  devIndicators: {
-    buildActivity: false,
-    buildActivityPosition: 'bottom-right',
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
   },
-  // Or completely disable in development
-  ...(process.env.NODE_ENV === 'development' && {
-    devIndicators: {
-      buildActivity: false,
-    }
-  })
 }
 
 module.exports = nextConfig

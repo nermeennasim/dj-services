@@ -1,10 +1,7 @@
 // Replace lucide-react imports with:
 import { MapPin } from "lucide-react";
 import {
-	FaHome,
-	FaArrowLeft,
 	FaMusic,
-	FaFrown,
 	FaPhone,
 	FaWhatsapp,
 	FaEnvelope,

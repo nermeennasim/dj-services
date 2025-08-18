@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { X, Phone, Calendar, Mail, Construction, Music } from "lucide-react";
+import { X, Phone, Calendar, Construction } from "lucide-react";
 
 const UnderConstructionBanner = () => {
 	const [isVisible, setIsVisible] = useState(true);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Music, Phone, QrCode, DollarSign, X, Plus } from "lucide-react";
+import { Music, Phone, QrCode, X, Plus } from "lucide-react";
 
 export default function FloatingButtons() {
 	const [isOpen, setIsOpen] = useState(false);

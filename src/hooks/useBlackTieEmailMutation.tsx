@@ -49,11 +49,13 @@ export const useBlackTieEmailMutation = () => {
 			setIsLoading(false);
 
 			return result;
-		} catch (err: any) {
+		} catch (err: unknown) {
 			console.error("❌ Email error:", err);
 
 			const errorMessage =
-				err?.message || "Failed to send email. Please try calling us directly.";
+				err instanceof Error
+					? err.message
+					: "Failed to send email. Please try calling us directly.";
 			setError(errorMessage);
 			setIsLoading(false);
 
