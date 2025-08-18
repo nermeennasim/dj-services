@@ -27,9 +27,9 @@ export const useEmailMutation = () => {
 		setData(null);
 
 		try {
-			console.log("📧 Sending email via API:", "/api/contact/submit");
+			console.log("📧 Sending email via API:", "/api/contact");
 
-			const response = await fetch("/api/contact/submit", {
+			const response = await fetch("/api/contact", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
