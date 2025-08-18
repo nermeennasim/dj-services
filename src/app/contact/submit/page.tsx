@@ -32,8 +32,8 @@ export async function POST(request: NextRequest) {
 
 		// Send email to admin
 		const adminEmailData = {
-			from: process.env.FROM_EMAIL || "noreply@blktieevents.com",
-			to: process.env.ADMIN_EMAIL || "blacktieevent@gmail.com",
+			from: process.env.FROM_EMAIL || " blktieevent@gmail.com",
+			to: process.env.ADMIN_EMAIL || " blktieevent@gmail.com",
 			subject: `New Contact Form Submission from ${name}`,
 			html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000; color: #fff; padding: 20px;">
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
           <div style="background: #1a1a1a; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
             <h3 style="color: #fbbf24; margin-top: 0;">Need Immediate Assistance?</h3>
             <p><strong>Phone:</strong> 909-268-1246</p>
-            <p><strong>Email:</strong> blacktieevent@gmail.com</p>
+            <p><strong>Email:</strong>  blktieevent@gmail.com</p>
             <p><strong>WhatsApp:</strong> <a href="https://wa.me/19092681246" style="color: #fbbf24;">Chat with us</a></p>
           </div>
           

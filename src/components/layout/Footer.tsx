@@ -96,10 +96,10 @@ export default function Footer() {
 							</a>
 
 							<a
-								href="mailto:blacktieevent@gmail.com"
+								href="mailto: blktieevent@gmail.com"
 								className="flex items-center gap-3 text-gray-400 hover:text-yellow-400 transition-colors group">
 								<FaEnvelope className="w-4 h-4 group-hover:scale-110 transition-transform" />
-								<span className="text-sm">blacktieevent@gmail.com</span>
+								<span className="text-sm"> blktieevent@gmail.com</span>
 							</a>
 
 							<div className="flex items-center gap-3 text-gray-400">

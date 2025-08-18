@@ -4,6 +4,8 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import FloatingButtons from "@/components/ui/FloatingButtons";
+import UnderConstructionBanner from "@/components/layout/UnderConstructionBanner";
+import HideNextJSIndicator from "@/components/layout/HideNextJSIndicator";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,9 +25,17 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${inter.className} antialiased bg-black`}>
-				<Header />
-				<main className="pt-16">{children}</main>
-				<Footer />
+				<HideNextJSIndicator />
+				{/* Banner stays full width */}
+				<UnderConstructionBanner />
+
+				{/* Page wrapper with padding */}
+				<div className="px-4 sm:px-6 lg:px-8 xl:px-12">
+					<Header />
+					<main className="pt-16">{children}</main>
+					<Footer />
+				</div>
+
 				<FloatingButtons />
 			</body>
 		</html>

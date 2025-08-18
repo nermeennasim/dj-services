@@ -106,7 +106,7 @@ export default function NotFound() {
 						<a
 							href="mailto:blktieevent@gmail.com"
 							className="text-gray-400 hover:text-yellow-400 transition-colors flex items-center gap-2">
-							<span>📧 blacktieevent@gmail.com</span>
+							<span>📧 blktieevent@gmail.com</span>
 						</a>
 					</div>
 				</div>

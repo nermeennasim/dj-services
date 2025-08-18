@@ -254,3 +254,20 @@ textarea::placeholder {
     clip-path: inset(43% 0 1% 0);
   }
 }
+
+/* Hide Next.js development indicator button */
+[data-nextjs-scroll-focus-boundary] {
+  display: none !important;
+}
+
+/* Additional selectors to ensure it's hidden */
+button[data-nextjs-data],
+div[data-nextjs-scroll-focus-boundary],
+.__next-dev-overlay-backdrop {
+  display: none !important;
+}
+
+/* Hide any Next.js floating development UI */
+[id^="__next"] button[style*="position: fixed"] {
+  display: none !important;
+}

@@ -28,7 +28,8 @@ export default function HomePage() {
 					<Headphones className="absolute bottom-32 left-1/5 w-5 h-5 text-yellow-400/20 animate-bounce delay-1000" />
 				</div>
 
-				<div className="relative z-10 text-center max-w-6xl mx-auto px-6">
+				{/* Content with proper spacing */}
+				<div className="relative z-10 text-center max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
 					{/* Main Heading */}
 					<h1 className="text-6xl md:text-8xl font-black mb-6 leading-none">
 						Level Up
@@ -83,9 +84,9 @@ export default function HomePage() {
 				</div>
 			</section>
 
-			{/* Services Preview Section */}
-			<section className="py-20 px-6">
-				<div className="max-w-7xl mx-auto">
+			{/* Services Preview Section - Better spacing */}
+			<section className="py-20">
+				<div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
 					<div className="text-center mb-16">
 						<h2 className="text-5xl font-black mb-4">
 							OUR <span className="text-yellow-400">SERVICES</span>
@@ -156,10 +157,10 @@ export default function HomePage() {
 				</div>
 			</section>
 
-			{/* Call to Action Section */}
-			<section className="py-20 px-6 relative">
+			{/* Call to Action Section - Better spacing */}
+			<section className="py-20 relative">
 				<div className="absolute inset-0 bg-gradient-to-r from-yellow-400/10 via-transparent to-yellow-400/10"></div>
-				<div className="relative z-10 max-w-4xl mx-auto text-center">
+				<div className="relative z-10 max-w-4xl mx-auto text-center px-6 sm:px-8 lg:px-12">
 					<h2 className="text-4xl md:text-5xl font-black mb-6">
 						Ready to Create Something
 						<span className="block text-yellow-400">AMAZING?</span>

@@ -8,12 +8,19 @@ import { Menu, X, Music, Phone, Mail } from "lucide-react";
 export default function Header() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [scrolled, setScrolled] = useState(false);
+	const [mounted, setMounted] = useState(false); // Add this line
 	const pathname = usePathname();
 
 	useEffect(() => {
+		setMounted(true); // Set mounted to true after component mounts
+
 		const handleScroll = () => {
 			setScrolled(window.scrollY > 20);
 		};
+
+		// Set initial scroll state
+		handleScroll();
+
 		window.addEventListener("scroll", handleScroll);
 		return () => window.removeEventListener("scroll", handleScroll);
 	}, []);
@@ -40,7 +47,7 @@ export default function Header() {
 		<>
 			<header
 				className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-					scrolled
+					mounted && scrolled // Only apply scrolled styles after mounting
 						? "bg-black/90 backdrop-blur-lg border-b border-white/10"
 						: "bg-transparent"
 				}`}>
@@ -100,7 +107,7 @@ export default function Header() {
 						<div className="hidden lg:flex items-center gap-4">
 							{/* Email Icon */}
 							<a
-								href="mailto:blacktieevent@gmail.com"
+								href="mailto: blktieevent@gmail.com"
 								className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white hover:bg-blue-500 transition-all duration-300 transform hover:scale-110 shadow-lg group"
 								title="Email Us">
 								<Mail className="w-5 h-5 group-hover:scale-110 transition-transform" />
@@ -179,7 +186,7 @@ export default function Header() {
 							<div className="space-y-3">
 								<div className="flex gap-2">
 									<a
-										href="mailto:blacktieevent@gmail.com"
+										href="mailto: blktieevent@gmail.com"
 										onClick={() => setIsOpen(false)}
 										className="flex-1 bg-blue-500 text-white text-center px-4 py-3 rounded-full font-bold hover:bg-blue-400 transition-all duration-300 flex items-center justify-center gap-2">
 										<Mail className="w-4 h-4" />
@@ -209,9 +216,9 @@ export default function Header() {
 									📞 909-268-1246
 								</a>
 								<a
-									href="mailto:blacktieevent@gmail.com"
+									href="mailto: blktieevent@gmail.com"
 									className="block text-sm text-gray-400 hover:text-yellow-400 transition-colors">
-									📧 blacktieevent@gmail.com
+									📧 blktieevent@gmail.com
 								</a>
 							</div>
 						</div>
