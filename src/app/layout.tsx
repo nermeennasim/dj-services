@@ -4,10 +4,17 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import FloatingButtons from "@/components/ui/FloatingButtons";
-import UnderConstructionBanner from "@/components/layout/UnderConstructionBanner";
 import HideNextJSIndicator from "@/components/layout/HideNextJSIndicator";
+import { Tangerine } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
+
+// Export tangerine so other components can use it
+export const tangerine = Tangerine({
+	subsets: ["latin"],
+	weight: ["400", "700"],
+	variable: "--font-tangerine", // Add CSS variable
+});
 
 export const metadata: Metadata = {
 	title: "Black Tie Events - Premium Event Entertainment",
@@ -24,10 +31,10 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
-			<body className={`${inter.className} antialiased bg-black`}>
+			<body
+				className={`${inter.className} ${tangerine.variable} antialiased bg-white`}>
 				<HideNextJSIndicator />
 				{/* Banner stays full width */}
-				<UnderConstructionBanner />
 
 				{/* Page wrapper with padding */}
 				<div className="px-4 sm:px-6 lg:px-8 xl:px-12">

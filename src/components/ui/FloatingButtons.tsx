@@ -1,21 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Music, Phone, QrCode, X, Plus } from "lucide-react";
+import { Phone, QrCode, X, Plus } from "lucide-react";
 
 export default function FloatingButtons() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [showQR, setShowQR] = useState(false);
 
-	// QR Code URL for song requests
-	//const songRequestUrl = `${window.location.origin}/services/request-song`;
-
 	const toggleMenu = () => {
 		setIsOpen(!isOpen);
-	};
-
-	const handleSongRequest = () => {
-		window.location.href = "/services/request-song";
 	};
 
 	const handleCall = () => {
@@ -29,8 +22,8 @@ export default function FloatingButtons() {
 
 	return (
 		<>
-			{/* Floating Action Buttons */}
-			<div className="fixed bottom-6 right-6 z-50">
+			{/* Floating Action Buttons - Centered vertically on right side */}
+			<div className="fixed top-1/2 transform -translate-y-1/2 right-6 z-50">
 				{/* Secondary Buttons (show when main button is opened) */}
 				<div
 					className={`flex flex-col gap-3 mb-4 transition-all duration-300 ${
@@ -38,18 +31,10 @@ export default function FloatingButtons() {
 							? "opacity-100 translate-y-0"
 							: "opacity-0 translate-y-4 pointer-events-none"
 					}`}>
-					{/* Song Request Button */}
-					<button
-						onClick={handleSongRequest}
-						className="bg-yellow-400 text-black w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:bg-yellow-300 transition-all duration-300 transform hover:scale-110 group"
-						title="Request a Song">
-						<Music className="w-6 h-6 group-hover:scale-110 transition-transform" />
-					</button>
-
 					{/* Show QR Code Button */}
 					<button
 						onClick={handleShowQR}
-						className="bg-purple-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:bg-purple-500 transition-all duration-300 transform hover:scale-110 group"
+						className="bg-[#F8F9FA] border border-[#E9ECEF] text-[#6C757D] w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:bg-[#E9ECEF] hover:text-white transition-all duration-300 transform hover:scale-110 group"
 						title="Show QR Code">
 						<QrCode className="w-6 h-6 group-hover:scale-110 transition-transform" />
 					</button>
@@ -57,7 +42,7 @@ export default function FloatingButtons() {
 					{/* Call Button */}
 					<button
 						onClick={handleCall}
-						className="bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:bg-green-500 transition-all duration-300 transform hover:scale-110 group"
+						className="bg-[#F8F9FA] border border-[#E9ECEF] text-[#6C757D] w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:bg-[#E9ECEF] hover:text-white transition-all duration-300 transform hover:scale-110 group"
 						title="Call DJ">
 						<Phone className="w-6 h-6 group-hover:scale-110 transition-transform" />
 					</button>
@@ -66,7 +51,7 @@ export default function FloatingButtons() {
 				{/* Main Toggle Button */}
 				<button
 					onClick={toggleMenu}
-					className={`bg-black border-2 border-yellow-400 text-yellow-400 w-16 h-16 rounded-full flex items-center justify-center shadow-2xl hover:bg-yellow-400 hover:text-black transition-all duration-300 transform hover:scale-110 ${
+					className={`bg-white border-2 border-[#6C757D] text-[#343434] w-16 h-16 rounded-full flex items-center justify-center shadow-lg hover:bg-[#6C757D] hover:text-white transition-all duration-300 transform hover:scale-110 ${
 						isOpen ? "rotate-45" : ""
 					}`}
 					title={isOpen ? "Close Menu" : "Quick Actions"}>
@@ -79,77 +64,88 @@ export default function FloatingButtons() {
 
 				{/* Pulse Animation Ring */}
 				<div className="absolute inset-0 -z-10">
-					<div className="w-16 h-16 bg-yellow-400 rounded-full animate-ping opacity-20"></div>
+					<div className="w-16 h-16 bg-[#E9ECEF] rounded-full animate-ping opacity-30"></div>
 				</div>
 			</div>
 
 			{/* QR Code Modal */}
 			{showQR && (
-				<div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-60 flex items-center justify-center p-6">
-					<div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center relative">
+				<div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-60 flex items-center justify-center p-6">
+					<div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center relative border border-[#E9ECEF]">
 						{/* Close Button */}
 						<button
 							onClick={() => setShowQR(false)}
-							className="absolute top-4 right-4 text-gray-500 hover:text-black transition-colors">
+							className="absolute top-4 right-4 text-[#6C757D] hover:text-[#343434] transition-colors">
 							<X className="w-6 h-6" />
 						</button>
 
-						{/* QR Code Header */}
+						{/* Maintenance Notice */}
 						<div className="mb-6">
-							<div className="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center mx-auto mb-4">
-								<Music className="w-8 h-8 text-black" />
+							<div className="bg-[#F8F9FA] border border-[#E9ECEF] rounded-lg p-4 mb-4">
+								<p className="text-[#6C757D] text-sm font-medium">
+									⚠️ QR Code temporarily disabled due to maintenance
+								</p>
+								<p className="text-[#8E8B82] text-xs mt-1">
+									Please use the contact methods below
+								</p>
+							</div>
+
+							<div className="w-16 h-16 bg-[#F8F9FA] border border-[#E9ECEF] rounded-full flex items-center justify-center mx-auto mb-4">
+								<QrCode className="w-8 h-8 text-[#6C757D]" />
 							</div>
 							<h3 className="text-2xl font-bold text-black mb-2">
-								Request a Song
+								Contact Information
 							</h3>
-							<p className="text-gray-600">
-								Scan to request your favorite song with payment
+							<p className="text-[#6C757D]">
+								Get in touch with Black Tie Events
 							</p>
 						</div>
 
-						{/* QR Code */}
-						<div className="bg-gray-100 p-6 rounded-xl mb-6">
-							<div className="w-48 h-48 mx-auto bg-white rounded-lg flex items-center justify-center border-2 border-gray-200">
-								{/* QR Code Placeholder - Replace with actual QR code generator */}
-								<div className="text-center">
-									<QrCode className="w-32 h-32 text-gray-400 mx-auto mb-2" />
-									<p className="text-xs text-gray-500">QR Code</p>
-								</div>
-							</div>
-						</div>
-
-						{/* Manual Link */}
-						<div className="text-sm text-gray-600 mb-4">
-							Or visit: <br />
+						{/* Contact Options */}
+						<div className="space-y-3 mb-6">
+							{/* Call Option */}
 							<a
-								href="/services/request-song"
-								className="text-yellow-600 hover:text-yellow-700 font-medium break-all">
-								www.blktieevents.com/request-song
+								href="tel:+19092681246"
+								className="block bg-[#F8F9FA] border border-[#E9ECEF] p-4 rounded-lg hover:bg-[#E9ECEF] transition-colors">
+								<div className="flex items-center gap-3">
+									<Phone className="w-5 h-5 text-[#6C757D]" />
+									<div className="text-left">
+										<p className="font-semibold text-[#343434]">Call Us</p>
+										<p className="text-sm text-[#6C757D]">909-268-1246</p>
+									</div>
+								</div>
+							</a>
+
+							{/* Website Link */}
+							<a
+								href="/contact"
+								className="block bg-[#F8F9FA] border border-[#E9ECEF] p-4 rounded-lg hover:bg-[#E9ECEF] transition-colors">
+								<div className="text-left">
+									<p className="font-semibold text-[#343434]">
+										Visit Contact Page
+									</p>
+									<p className="text-sm text-[#6C757D]">
+										More contact options available
+									</p>
+								</div>
 							</a>
 						</div>
 
-						{/* Action Buttons */}
-						<div className="flex gap-3">
-							<button
-								onClick={() => setShowQR(false)}
-								className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-full font-medium hover:bg-gray-200 transition-colors">
-								Close
-							</button>
-							<button
-								onClick={handleSongRequest}
-								className="flex-1 bg-yellow-400 text-black py-3 rounded-full font-bold hover:bg-yellow-300 transition-colors">
-								Request Song
-							</button>
-						</div>
+						{/* Action Button */}
+						<button
+							onClick={() => setShowQR(false)}
+							className="w-full bg-[#F8F9FA] text-[#343434] border border-[#E9ECEF] py-3 rounded-lg font-medium hover:bg-[#E9ECEF] hover:text-white transition-colors">
+							Close
+						</button>
 					</div>
 				</div>
 			)}
 
-			{/* Quick Hint (shows first time) */}
+			{/* Quick Hint - Positioned relative to centered buttons */}
 			{!isOpen && (
-				<div className="fixed bottom-24 right-6 z-40">
-					<div className="bg-black/90 text-white px-4 py-2 rounded-lg text-sm animate-bounce">
-						💰 Request Songs!
+				<div className="fixed top-1/2 transform -translate-y-1/2 right-16 z-40">
+					<div className="bg-[#343434] text-white px-4 py-2 rounded-lg text-sm animate-bounce shadow-lg">
+						📞 Quick Contact
 					</div>
 				</div>
 			)}

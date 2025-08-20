@@ -8,17 +8,16 @@ import { Menu, X, Phone, Mail } from "lucide-react";
 export default function Header() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [scrolled, setScrolled] = useState(false);
-	const [mounted, setMounted] = useState(false); // Add this line
+	const [mounted, setMounted] = useState(false);
 	const pathname = usePathname();
 
 	useEffect(() => {
-		setMounted(true); // Set mounted to true after component mounts
+		setMounted(true);
 
 		const handleScroll = () => {
 			setScrolled(window.scrollY > 20);
 		};
 
-		// Set initial scroll state
 		handleScroll();
 
 		window.addEventListener("scroll", handleScroll);
@@ -47,27 +46,34 @@ export default function Header() {
 		<>
 			<header
 				className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-					mounted && scrolled // Only apply scrolled styles after mounting
-						? "bg-black/90 backdrop-blur-lg border-b border-white/10"
-						: "bg-transparent"
+					mounted && scrolled
+						? "bg-white/95 backdrop-blur-lg border-b border-[#E9ECEF] shadow-sm"
+						: "bg-white/80 backdrop-blur-sm"
 				}`}>
 				<nav className="max-w-7xl mx-auto px-6 py-4">
 					<div className="flex justify-between items-center">
 						{/* Left: Logo */}
 						<Link href="/" className="flex items-center gap-3 group">
-							<div className="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-yellow-400/25">
+							<div className="w-24 h-24 bg-[#F8F9FA] border border-[#E9ECEF] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
 								<img
 									src="/logo.png"
 									alt="Black Tie Events"
-									className="h-10 w-10 rounded-full object-contain"
+									className="h-16 w-16 rounded-full object-contain"
 								/>
 							</div>
 							<div>
-								<div className="text-xl font-black text-white">
+								{/* <div className="text-3xl font-black text-black font-['var(--font-tangerine)']">
 									Black Tie Events
 								</div>
-								<div className="text-xs text-gray-400">
+								<div className="text-xs text-[#6C757D]">
 									Where Every Event Becomes Extraordinary
+								</div> */}
+								<div className="text-3xl font-black text-black font-['var(--font-tangerine)']  transition-transform duration-300 ">
+									<img
+										src="logo_text_black_tie_events2.png"
+										alt="Black Tie Events"
+										className="h-21 px-0 w-auto"
+									/>
 								</div>
 							</div>
 						</Link>
@@ -78,21 +84,23 @@ export default function Header() {
 								<div key={item.name} className="relative group">
 									<Link
 										href={item.href}
-										className={`text-white hover:text-yellow-400 font-medium transition-colors duration-300 py-2 ${
-											pathname === item.href ? "text-yellow-400" : ""
+										className={`text-black hover:text-[#6C757D] font-sans transition-colors duration-300 py-1 px-2 rounded-lg hover:bg-[#F8F9FA] ${
+											pathname === item.href
+												? "text-[#343434] bg-[#E9ECEF]"
+												: ""
 										}`}>
 										{item.name}
 									</Link>
 
 									{/* Submenu for Services */}
 									{item.submenu && (
-										<div className="absolute top-full left-0 mt-2 w-48 bg-black/95 backdrop-blur-lg border border-white/10 rounded-lg shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+										<div className="absolute top-full left-0 mt-2 w-48 bg-white border border-[#E9ECEF] rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
 											<div className="p-2">
 												{item.submenu.map((subItem) => (
 													<Link
 														key={subItem.name}
 														href={subItem.href}
-														className="block px-4 py-2 text-gray-300 hover:text-yellow-400 hover:bg-white/5 rounded-md transition-colors duration-200">
+														className="block px-4 py-2 text-[#343434] hover:text-black hover:bg-[#F8F9FA] rounded-md transition-colors duration-200">
 														{subItem.name}
 													</Link>
 												))}
@@ -103,29 +111,31 @@ export default function Header() {
 							))}
 						</div>
 
-						{/* Right: Contact Icons Only */}
+						{/* Right: Contact Icons */}
 						<div className="hidden lg:flex items-center gap-4">
-							{/* Email Icon */}
+							{/* Email Button */}
 							<a
-								href="mailto: blktieevent@gmail.com"
-								className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white hover:bg-blue-500 transition-all duration-300 transform hover:scale-110 shadow-lg group"
+								href="mailto:blktieevent@gmail.com"
+								className="flex items-center gap-2 bg-white text-[#343434] border border-[#E9ECEF] px-4 py-2 rounded-full hover:bg-[#F8F9FA] hover:border-[#6C757D] transition-all duration-300 transform hover:scale-105 shadow-sm group"
 								title="Email Us">
-								<Mail className="w-5 h-5 group-hover:scale-110 transition-transform" />
+								<Mail className="w-4 h-4 group-hover:scale-110 transition-transform" />
+								<span className="text-sm font-medium">Email</span>
 							</a>
 
-							{/* Call Icon */}
+							{/* Phone Button */}
 							<a
 								href="tel:+19092681246"
-								className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white hover:bg-green-500 transition-all duration-300 transform hover:scale-110 shadow-lg group"
+								className="flex items-center gap-2 bg-white text-[#343434] border border-[#E9ECEF] px-4 py-2 rounded-full hover:bg-[#F8F9FA] hover:border-[#6C757D] transition-all duration-300 transform hover:scale-105 shadow-sm group"
 								title="Call Us">
-								<Phone className="w-5 h-5 group-hover:scale-110 transition-transform" />
+								<Phone className="w-4 h-4 group-hover:scale-110 transition-transform" />
+								<span className="text-sm font-medium">Call</span>
 							</a>
 						</div>
 
 						{/* Mobile Menu Button */}
 						<button
 							onClick={() => setIsOpen(!isOpen)}
-							className="lg:hidden p-2 text-white hover:text-yellow-400 transition-colors duration-300">
+							className="lg:hidden p-2 text-[#343434] hover:text-[#6C757D] hover:bg-[#F8F9FA] rounded-lg transition-all duration-300">
 							{isOpen ? (
 								<X className="w-6 h-6" />
 							) : (
@@ -142,25 +152,35 @@ export default function Header() {
 					isOpen ? "opacity-100 visible" : "opacity-0 invisible"
 				}`}>
 				<div
-					className="absolute inset-0 bg-black/80 backdrop-blur-lg"
+					className="absolute inset-0 bg-black/50 backdrop-blur-sm"
 					onClick={() => setIsOpen(false)}
 				/>
 
 				<div
-					className={`absolute right-0 top-0 h-full w-80 bg-black border-l border-white/10 transform transition-transform duration-300 ${
+					className={`absolute right-0 top-0 h-full w-80 bg-white border-l border-[#E9ECEF] transform transition-transform duration-300 ${
 						isOpen ? "translate-x-0" : "translate-x-full"
 					}`}>
 					<div className="p-6 pt-20">
+						{/* Mobile Logo */}
+						<div className="mb-8 text-center">
+							<div className="text-2xl font-black text-black font-['var(--font-tangerine)'] mb-1">
+								Black Tie Events
+							</div>
+							<div className="text-xs text-[#6C757D]">
+								Premium Event Entertainment
+							</div>
+						</div>
+
 						<div className="space-y-6">
 							{navigation.map((item) => (
 								<div key={item.name}>
 									<Link
 										href={item.href}
 										onClick={() => setIsOpen(false)}
-										className={`block text-lg font-medium transition-colors duration-300 ${
+										className={`block text-lg font-medium transition-colors duration-300 py-2 px-3 rounded-lg ${
 											pathname === item.href
-												? "text-yellow-400"
-												: "text-white hover:text-yellow-400"
+												? "text-black bg-[#F8F9FA]"
+												: "text-[#343434] hover:text-black hover:bg-[#F8F9FA]"
 										}`}>
 										{item.name}
 									</Link>
@@ -173,7 +193,7 @@ export default function Header() {
 													key={subItem.name}
 													href={subItem.href}
 													onClick={() => setIsOpen(false)}
-													className="block text-gray-400 hover:text-yellow-400 transition-colors duration-200">
+													className="block text-[#6C757D] hover:text-[#343434] hover:bg-[#F8F9FA] py-1 px-3 rounded transition-colors duration-200">
 													{subItem.name}
 												</Link>
 											))}
@@ -182,20 +202,20 @@ export default function Header() {
 								</div>
 							))}
 
-							{/* Action Buttons */}
-							<div className="space-y-3">
-								<div className="flex gap-2">
+							{/* Mobile Action Buttons */}
+							<div className="space-y-3 pt-6 border-t border-[#E9ECEF]">
+								<div className="grid grid-cols-2 gap-3">
 									<a
-										href="mailto: blktieevent@gmail.com"
+										href="mailto:blktieevent@gmail.com"
 										onClick={() => setIsOpen(false)}
-										className="flex-1 bg-blue-500 text-white text-center px-4 py-3 rounded-full font-bold hover:bg-blue-400 transition-all duration-300 flex items-center justify-center gap-2">
+										className="bg-[#F8F9FA] text-[#343434] border border-[#E9ECEF] text-center px-4 py-3 rounded-lg font-medium hover:bg-[#E9ECEF] hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
 										<Mail className="w-4 h-4" />
 										Email
 									</a>
 									<a
 										href="tel:+19092681246"
 										onClick={() => setIsOpen(false)}
-										className="flex-1 bg-green-500 text-white text-center px-4 py-3 rounded-full font-bold hover:bg-green-400 transition-all duration-300 flex items-center justify-center gap-2">
+										className="bg-[#F8F9FA] text-[#343434] border border-[#E9ECEF] text-center px-4 py-3 rounded-lg font-medium hover:bg-[#E9ECEF] hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
 										<Phone className="w-4 h-4" />
 										Call
 									</a>
@@ -203,21 +223,21 @@ export default function Header() {
 								<Link
 									href="/services/book-a-call"
 									onClick={() => setIsOpen(false)}
-									className="block w-full bg-yellow-400 text-black text-center px-6 py-3 rounded-full font-bold hover:bg-yellow-300 transition-all duration-300">
+									className="block w-full bg-[#E9ECEF] text-[#343434] text-center px-6 py-3 rounded-lg font-bold hover:bg-[#6C757D] hover:text-white transition-all duration-300">
 									📅 Book Your Event
 								</Link>
 							</div>
 
 							{/* Mobile Contact Info */}
-							<div className="pt-6 border-t border-gray-700 text-center">
+							<div className="pt-6 border-t border-[#E9ECEF] text-center">
 								<a
 									href="tel:+19092681246"
-									className="block text-lg text-yellow-400 font-semibold hover:text-yellow-300 transition-colors mb-2">
+									className="block text-lg text-[#343434] font-semibold hover:text-[#6C757D] transition-colors mb-2">
 									📞 909-268-1246
 								</a>
 								<a
-									href="mailto: blktieevent@gmail.com"
-									className="block text-sm text-gray-400 hover:text-yellow-400 transition-colors">
+									href="mailto:blktieevent@gmail.com"
+									className="block text-sm text-[#6C757D] hover:text-[#343434] transition-colors">
 									📧 blktieevent@gmail.com
 								</a>
 							</div>
