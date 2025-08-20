@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&display=swap');
 
 /* Custom animations */
 @keyframes spin-slow {
@@ -21,34 +23,34 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar for webkit browsers */
+/* Custom scrollbar for webkit browsers - White Theme */
 ::-webkit-scrollbar {
   width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: #F8F9FA;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #fbbf24;
+  background: #6C757D;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #f59e0b;
+  background: #343434;
 }
 
-/* Text selection */
+/* Text selection - White Theme */
 ::selection {
-  background: #fbbf24;
-  color: #000;
+  background: #E9ECEF;
+  color: #343434;
 }
 
-/* Focus states */
+/* Focus states - White Theme */
 button:focus,
 a:focus {
-  outline: 2px solid #fbbf24;
+  outline: 2px solid #6C757D;
   outline-offset: 2px;
 }
 
@@ -65,7 +67,7 @@ a:focus {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(108, 117, 125, 0.1), transparent);
   transition: left 0.5s;
 }
 
@@ -73,9 +75,9 @@ a:focus {
   left: 100%;
 }
 
-/* Background gradient animations */
+/* Background gradient animations - White Theme */
 .bg-animated {
-  background: linear-gradient(45deg, #000, #1a1a1a, #000);
+  background: linear-gradient(45deg, #FFFFFF, #F8F9FA, #FFFFFF);
   background-size: 200% 200%;
   animation: gradient-shift 3s ease infinite;
 }
@@ -94,21 +96,21 @@ a:focus {
   }
 }
 
-/* Form styling */
+/* Form styling - White Theme */
 input,
 textarea,
 select {
-  @apply bg-gray-900 border border-gray-700 text-white rounded-lg px-4 py-2;
-  @apply focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400;
+  @apply bg-white border border-gray-300 text-gray-800 rounded-lg px-4 py-2;
+  @apply focus:border-gray-500 focus:ring-1 focus:ring-gray-400;
   @apply transition-colors duration-300;
 }
 
 input::placeholder,
 textarea::placeholder {
-  @apply text-gray-500;
+  @apply text-gray-400;
 }
 
-/* Card hover effects */
+/* Card hover effects - White Theme */
 .card-hover {
   transition: all 0.3s ease;
   transform-origin: center;
@@ -116,13 +118,13 @@ textarea::placeholder {
 
 .card-hover:hover {
   transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 40px rgba(108, 117, 125, 0.15);
 }
 
-/* Loading spinner */
+/* Loading spinner - White Theme */
 .loading-spinner {
-  border: 2px solid #1a1a1a;
-  border-top: 2px solid #fbbf24;
+  border: 2px solid #F8F9FA;
+  border-top: 2px solid #6C757D;
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -148,10 +150,10 @@ textarea::placeholder {
   font-size: clamp(2rem, 8vw, 6rem);
 }
 
-/* Glitch effect for special elements */
+/* Glitch effect for special elements - White Theme */
 .glitch {
   position: relative;
-  color: white;
+  color: #343434;
   animation: glitch 0.3s ease-in-out infinite alternate;
 }
 
@@ -167,13 +169,13 @@ textarea::placeholder {
 
 .glitch::before {
   animation: glitch-1 0.5s ease-in-out infinite alternate;
-  color: #fbbf24;
+  color: #6C757D;
   z-index: -1;
 }
 
 .glitch::after {
   animation: glitch-2 0.3s ease-in-out infinite alternate;
-  color: #ef4444;
+  color: #8E8B82;
   z-index: -2;
 }
 
@@ -270,4 +272,182 @@ div[data-nextjs-scroll-focus-boundary],
 /* Hide any Next.js floating development UI */
 [id^="__next"] button[style*="position: fixed"] {
   display: none !important;
+}
+
+/* Float animation for elegant elements */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* White Theme Custom Utilities */
+.text-primary {
+  color: #000000;
+  /* Black headings */
+}
+
+.text-secondary {
+  color: #343434;
+  /* Dark gray body text */
+}
+
+.text-muted {
+  color: #6C757D;
+  /* Medium gray */
+}
+
+.text-light {
+  color: #8E8B82;
+  /* Light gray */
+}
+
+.bg-primary {
+  background-color: #FFFFFF;
+  /* White background */
+}
+
+.bg-secondary {
+  background-color: #F8F9FA;
+  /* Light gray background */
+}
+
+.bg-tertiary {
+  background-color: #E9ECEF;
+  /* Medium gray background */
+}
+
+.border-theme {
+  border-color: #E9ECEF;
+  /* Light gray borders */
+}
+
+.border-theme-dark {
+  border-color: #6C757D;
+  /* Darker gray borders */
+}
+
+/* Elegant button styles for white theme */
+.btn-primary {
+  @apply bg-gray-100 text-gray-700 border border-gray-300 px-6 py-3 rounded-lg font-medium;
+  @apply hover:bg-gray-200 hover:text-gray-800 transition-all duration-300;
+}
+
+.btn-secondary {
+  @apply bg-white text-gray-600 border-2 border-gray-400 px-6 py-3 rounded-lg font-medium;
+  @apply hover:bg-gray-100 hover:text-gray-800 transition-all duration-300;
+}
+
+/* Gradient text for special headings */
+.gradient-text {
+  background: linear-gradient(135deg, #343434, #6C757D);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtle shadow utilities */
+.shadow-theme {
+  box-shadow: 0 4px 6px -1px rgba(108, 117, 125, 0.1), 0 2px 4px -1px rgba(108, 117, 125, 0.06);
+}
+
+.shadow-theme-lg {
+  box-shadow: 0 10px 15px -3px rgba(108, 117, 125, 0.1), 0 4px 6px -2px rgba(108, 117, 125, 0.05);
+}
+
+/* Elegant hover effects */
+.hover-lift {
+  transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(108, 117, 125, 0.15);
+}
+
+/* Custom scrollbar for specific containers */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #F8F9FA;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #E9ECEF;
+  border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #6C757D;
+}
+
+/* Golden shine effect for logo text image */
+.hover-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.hover-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 215, 0, 0.4),
+      rgba(255, 223, 0, 0.6),
+      rgba(255, 215, 0, 0.4),
+      transparent);
+  transform: skewX(-25deg);
+  transition: left 0.8s ease-in-out;
+  pointer-events: none;
+}
+
+.hover-shine:hover::before {
+  left: 100%;
+}
+
+/* Alternative golden glow effect */
+.golden-glow {
+  transition: all 0.3s ease;
+}
+
+.golden-glow:hover {
+  filter:
+    drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)) drop-shadow(0 0 20px rgba(255, 215, 0, 0.3)) drop-shadow(0 0 30px rgba(255, 215, 0, 0.2));
+  transform: scale(1.05);
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-gold {
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 215, 0, 0.4) 50%,
+      transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
 }
