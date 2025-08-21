@@ -7,9 +7,9 @@ import {
 	FaEnvelope,
 	FaFacebook,
 	FaInstagram,
-	FaTwitter,
 	FaMapPin,
 } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 export default function Footer() {
 	const currentYear = new Date().getFullYear();
@@ -42,7 +42,7 @@ export default function Footer() {
 		{
 			name: "X (Twitter)",
 			href: "https://x.com/BLKTIE_EVENT",
-			icon: <FaTwitter className="w-5 h-5" />,
+			icon: <FaXTwitter className="w-5 h-5" />,
 		},
 		{
 			name: "WhatsApp",

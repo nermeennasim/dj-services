@@ -141,14 +141,14 @@ export default function FloatingButtons() {
 				</div>
 			)}
 
-			{/* Quick Hint - Positioned relative to centered buttons */}
+			{/* Quick Hint - Positioned relative to centered buttons
 			{!isOpen && (
 				<div className="fixed top-1/2 transform -translate-y-1/2 right-16 z-40">
 					<div className="bg-[#343434] text-white px-4 py-2 rounded-lg text-sm animate-bounce shadow-lg">
 						📞 Quick Contact
 					</div>
 				</div>
-			)}
+			)} */}
 		</>
 	);
 }
