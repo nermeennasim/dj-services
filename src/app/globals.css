@@ -2,6 +2,7 @@
 
 /* Google Fonts Import */
 @import url('https://fonts.googleapis.com/css2?family=Tangerine:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Prata&display=swap');
 
 /* Custom animations */
 @keyframes spin-slow {
@@ -393,7 +394,7 @@ div[data-nextjs-scroll-focus-boundary],
   background: #6C757D;
 }
 
-/* Golden shine effect for logo text image */
+/* Shine effect for logo text image */
 .hover-shine {
   position: relative;
   overflow: hidden;
@@ -408,9 +409,9 @@ div[data-nextjs-scroll-focus-boundary],
   height: 100%;
   background: linear-gradient(90deg,
       transparent,
-      rgba(255, 215, 0, 0.4),
-      rgba(255, 223, 0, 0.6),
-      rgba(255, 215, 0, 0.4),
+      rgba(255, 255, 255, 0.4),
+      rgba(255, 255, 255, 0.6),
+      rgba(255, 255, 255, 0.4),
       transparent);
   transform: skewX(-25deg);
   transition: left 0.8s ease-in-out;
@@ -421,14 +422,14 @@ div[data-nextjs-scroll-focus-boundary],
   left: 100%;
 }
 
-/* Alternative golden glow effect */
+/* Alternative glow effect */
 .golden-glow {
   transition: all 0.3s ease;
 }
 
 .golden-glow:hover {
   filter:
-    drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)) drop-shadow(0 0 20px rgba(255, 215, 0, 0.3)) drop-shadow(0 0 30px rgba(255, 215, 0, 0.2));
+    drop-shadow(0 0 10px rgba(255, 255, 255, 0.5)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.2));
   transform: scale(1.05);
 }
 
@@ -443,10 +444,10 @@ div[data-nextjs-scroll-focus-boundary],
   }
 }
 
-.shimmer-gold {
+.shimmer-white {
   background: linear-gradient(90deg,
       transparent 0%,
-      rgba(255, 215, 0, 0.4) 50%,
+      rgba(255, 255, 255, 0.4) 50%,
       transparent 100%);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;

@@ -43,7 +43,7 @@ export default function RootLayout({
 					<Footer />
 				</div>
 
-				<FloatingButtons />
+			
 			</body>
 		</html>
 	);
