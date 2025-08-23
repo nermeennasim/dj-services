@@ -67,20 +67,11 @@ export default function Footer() {
 								/>
 							</div>
 							<div>
-								<div className="text-xl font-black text-black font-['var(--font-tangerine)']">
+								<div className="text-xl font-black text-black font-serif']">
 									Black Tie Events
-								</div>
-								<div className="text-xs text-[#6C757D]">
-									Where Every Event Becomes Extraordinary
 								</div>
 							</div>
 						</div>
-
-						<p className="text-[#6C757D] text-sm mb-6 leading-relaxed">
-							Premium DJ services, equipment rental, and event entertainment.
-							Creating unforgettable experiences for weddings, parties, and
-							corporate events.
-						</p>
 
 						{/* Contact Info */}
 						<div className="space-y-3">

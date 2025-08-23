@@ -1,5 +1,5 @@
 const Services = () => {
-	return <>Services Page</>;
+	return <div>Services Page</div>;
 };
 
 export default Services;
