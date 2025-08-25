@@ -1,70 +1,70 @@
-import 'dotenv/config';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import emailRoutes from './routes/emailRoutes';
 
 const app = express();
 
-// --- Config ---
-const PORT = Number(process.env.PORT) || 8000;
+// Trust proxy for Vercel
+app.set('trust proxy', 1);
 
-// CORS
-const allowedOrigins = (process.env.CORS_ORIGINS || '')
-  .split(',')
-  .map((s) => s.trim())
-  .filter(Boolean);
+// CORS Configuration
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'https://www.blktieevents.com', // Replace with your actual frontend URL
+    'https://blktieevents.com',],
+  credentials: true,
+}));
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow non-browser tools (like curl) with no origin
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error(`CORS blocked for origin: ${origin}`));
-    },
-    credentials: true
-  })
-);
+app.use(express.json({ limit: '10mb' }));
 
-// Body parsing
-app.use(express.json({ limit: '1mb' }));
-app.use(express.urlencoded({ extended: true }));
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  message: {
+    success: false,
+    message: 'Too many requests from this IP, please try again later.',
+  },
+});
+app.use(limiter);
 
-// Trust proxy (so req.ip works correctly behind reverse proxies)
-app.set('trust proxy', true);
+// Routes
+app.use('/api/emails', emailRoutes);
 
-// --- Health root ---
-app.get('/health', (_req, res) => {
+// Health check
+app.get('/api/health', (req: Request, res: Response) => {
   res.json({
     status: 'OK',
-    service: 'Black Tie Events API',
+    service: 'DJ Services Email API',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    sendgridConfigured: !!process.env.SENDGRID_API_KEY
   });
 });
 
-// --- Mount routes under /api/emails ---
-app.use('/api/emails', emailRoutes);
-
-// --- 404 fallback ---
-app.use((_req, res) => {
-  res.status(404).json({ success: false, message: 'Not Found' });
+// Root route
+app.get('/', (req: Request, res: Response) => {
+  res.json({
+    message: 'DJ Services Backend API',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      contact: '/api/emails/contact'
+    }
+  });
 });
 
-// --- Error handler ---
-app.use(
-  (
-    err: any,
-    _req: express.Request,
-    res: express.Response,
-    _next: express.NextFunction
-  ) => {
-    console.error('Server error:', err);
-    res.status(500).json({ success: false, message: 'Server error' });
-  }
-);
+const PORT = process.env.PORT || 8000;
 
-// --- Start ---
-app.listen(PORT, () => {
-  console.log(`✅ Email API listening on http://localhost:${PORT}`);
-});
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📧 Email service ready`);
+  });
+}
+
+// IMPORTANT: Export default for Vercel
+export default app;

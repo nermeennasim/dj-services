@@ -1,29 +1,27 @@
 {
-  "name": "backend",
+  "name": "dj-services-backend",
   "version": "1.0.0",
-  "description": "Black Tie Events API (email service)",
-  "main": "dist/server.js",
-  "type": "commonjs",
+  "main": "src/server.ts",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc -p tsconfig.json",
-    "start": "node dist/server.js",
-    "lint": "echo \"(optional) add eslint here\""
+    "dev": "ts-node src/server.ts",
+    "build": "echo 'Vercel handles compilation'",
+    "start": "node src/server.ts"
   },
   "dependencies": {
-    "@sendgrid/mail": "^8.1.0",
+    "@sendgrid/mail": "^7.7.0",
+    "@vercel/node": "^5.3.13",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.11.2"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
-    "@types/node": "^20.12.8",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.4.5"
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
+    "@types/node": "^20.4.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "engines": {
+    "node": "18.x"
+  }
 }
