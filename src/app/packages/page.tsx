@@ -1,5 +1,5 @@
-const Plans = () => {
-	return <div>Plans</div>;
+const Packages = () => {
+	return <div>Packages </div>;
 };
 
-export default Plans;
+export default Packages;

@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import FloatingButtons from "@/components/ui/FloatingButtons";
 import HideNextJSIndicator from "@/components/layout/HideNextJSIndicator";
 import { Tangerine } from "next/font/google";
 
@@ -42,8 +41,6 @@ export default function RootLayout({
 					<main className="pt-16">{children}</main>
 					<Footer />
 				</div>
-
-			
 			</body>
 		</html>
 	);

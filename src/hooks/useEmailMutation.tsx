@@ -1,80 +1,74 @@
-import { useState } from "react";
-
+// src/lib/emailMutation.ts
 export interface ContactFormData {
 	name: string;
 	email: string;
-	phone: string;
+	phone?: string;
+	eventType?: string;
+	eventDate?: string;
 	message: string;
 }
 
-export interface ApiResponse {
-	success?: boolean;
-	message?: string;
-	error?: string;
-	id?: string;
+export interface EmailResponse {
+	success: boolean;
+	message: string;
 }
 
-export const useEmailMutation = () => {
-	const [isLoading, setIsLoading] = useState(false);
-	const [isError, setIsError] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-	const [data, setData] = useState<ApiResponse | null>(null);
+export class EmailMutation {
+	private apiUrl: string;
 
-	const sendEmail = async (formData: ContactFormData): Promise<ApiResponse> => {
-		setIsLoading(true);
-		setIsError(false);
-		setError(null);
-		setData(null);
+	constructor() {
+		this.apiUrl =
+			process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+	}
 
+	async submitContactForm(data: ContactFormData): Promise<EmailResponse> {
 		try {
-			console.log("📧 Sending email via API:", "/api/contact");
-
-			const response = await fetch("/api/contact", {
+			const response = await fetch(`${this.apiUrl}/emails/contact`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(formData),
+				body: JSON.stringify(data),
 			});
 
-			const result: ApiResponse = await response.json();
+			const result = await response.json();
 
-			console.log("📬 API Response:", result);
-
-			if (!response.ok || !result.success) {
-				throw new Error(
-					result.error || `HTTP ${response.status}: Failed to send email`
-				);
+			if (!response.ok) {
+				throw new Error(result.message || "Failed to send message");
 			}
 
-			setData(result);
-			return result;
-		} catch (err) {
-			const errorMessage =
-				err instanceof Error ? err.message : "Network error occurred";
-			console.error("❌ Email API Error:", errorMessage);
+			return {
+				success: true,
+				message: result.message || "Message sent successfully!",
+			};
+		} catch (error) {
+			console.error("Email submission error:", error);
 
-			setIsError(true);
-			setError(errorMessage);
-			throw err;
-		} finally {
-			setIsLoading(false);
+			if (error instanceof Error) {
+				return {
+					success: false,
+					message: error.message,
+				};
+			}
+
+			return {
+				success: false,
+				message: "Network error. Please check your connection and try again.",
+			};
 		}
-	};
+	}
 
-	const reset = () => {
-		setIsError(false);
-		setError(null);
-		setData(null);
-		setIsLoading(false);
-	};
+	// Test backend connection
+	async testConnection(): Promise<boolean> {
+		try {
+			const response = await fetch(`${this.apiUrl}/emails/health`);
+			return response.ok;
+		} catch (error) {
+			console.error("Backend connection test failed:", error);
+			return false;
+		}
+	}
+}
 
-	return {
-		sendEmail, // ✅ This is what your Contact form will use
-		isLoading,
-		isError,
-		error,
-		data,
-		reset,
-	};
-};
+// Export singleton instance
+export const emailMutation = new EmailMutation();
