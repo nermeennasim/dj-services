@@ -9,8 +9,21 @@ import {
 	MessageCircle,
 	Calendar,
 	Music,
-	Settings,
+	CheckCircle,
+	AlertCircle,
+	Loader2,
 } from "lucide-react";
+import {
+	validateName,
+	validateEmail,
+	validatePhone,
+	validateMessage,
+	formatPhoneNumber,
+	getCountryData,
+	formatInternationalPhone,
+} from "@/utils/validation";
+import countries, { getCountriesAlphabetically } from "@/data/countries";
+import { emailMutation } from "@/hooks/useEmailMutation";
 
 // Add Calendly type declaration
 declare global {
@@ -19,12 +32,15 @@ declare global {
 	}
 }
 
-// Contact Form Component with Maintenance Notice and Validation
-const ContactFormWithMaintenance = () => {
+export default function ContactPage() {
+	const [calendlyLoaded, setCalendlyLoaded] = useState(false);
+
+	// Contact Form State
 	const [formData, setFormData] = useState({
 		name: "",
 		email: "",
 		phone: "",
+		countryCode: "US", // Default to US
 		eventType: "",
 		eventDate: "",
 		message: "",
@@ -44,9 +60,64 @@ const ContactFormWithMaintenance = () => {
 		message: false,
 	});
 
-	const openCalendly = () => {
-		if (typeof window !== "undefined" && (window as any).Calendly) {
-			(window as any).Calendly.initPopupWidget({
+	// Form submission states
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isSuccess, setIsSuccess] = useState(false);
+	const [submitError, setSubmitError] = useState<string | null>(null);
+
+	// Load Calendly scripts and initialize
+	useEffect(() => {
+		// Load CSS
+		const link = document.createElement("link");
+		link.href = "https://assets.calendly.com/assets/external/widget.css";
+		link.rel = "stylesheet";
+		document.head.appendChild(link);
+
+		// Load Script
+		const script = document.createElement("script");
+		script.src = "https://assets.calendly.com/assets/external/widget.js";
+		script.async = true;
+		script.onload = () => {
+			setCalendlyLoaded(true);
+
+			// Initialize badge widget (floating button)
+			if (window.Calendly) {
+				window.Calendly.initBadgeWidget({
+					url: "https://calendly.com/blktieevent/welcome-to-black-tie-events",
+					text: "📅 Book Free Consultation",
+					color: "#6C757D",
+					textColor: "#FFFFFF",
+					branding: false,
+				});
+			}
+		};
+		document.head.appendChild(script);
+
+		return () => {
+			// Cleanup
+			const existingScript = document.querySelector(
+				'script[src="https://assets.calendly.com/assets/external/widget.js"]'
+			);
+			const existingLink = document.querySelector(
+				'link[href="https://assets.calendly.com/assets/external/widget.css"]'
+			);
+			if (existingScript) document.head.removeChild(existingScript);
+			if (existingLink) document.head.removeChild(existingLink);
+
+			// Remove badge widget
+			const badgeWidget = document.querySelector(".calendly-badge-widget");
+			if (badgeWidget) badgeWidget.remove();
+		};
+	}, []);
+
+	// Get current country data and alphabetically sorted countries
+	const currentCountry = getCountryData(formData.countryCode);
+	const countriesAlphabetical = getCountriesAlphabetically();
+
+	// Function to open Calendly popup
+	const openCalendlyPopup = () => {
+		if (window.Calendly) {
+			window.Calendly.initPopupWidget({
 				url: "https://calendly.com/blktieevent/welcome-to-black-tie-events",
 			});
 		} else {
@@ -75,14 +146,34 @@ const ContactFormWithMaintenance = () => {
 		return "";
 	};
 
-	const validatePhone = (phone: string) => {
-		if (!phone.trim()) return ""; // Phone is optional
-		// Remove all non-digit characters for validation
+	const validatePhone = (phone: string, countryCode: string) => {
+		if (!phone.trim()) return "";
 		const digitsOnly = phone.replace(/\D/g, "");
-		if (digitsOnly.length < 10)
-			return "Phone number must be at least 10 digits";
-		if (digitsOnly.length > 15)
-			return "Phone number must be less than 15 digits";
+
+		switch (countryCode) {
+			case "US":
+				if (digitsOnly.length < 10) return "US phone number must be 10 digits";
+				if (digitsOnly.length > 10)
+					return "US phone number must be exactly 10 digits";
+				break;
+			case "GT":
+				if (digitsOnly.length < 8)
+					return "Guatemala phone number must be 8 digits";
+				if (digitsOnly.length > 8)
+					return "Guatemala phone number must be exactly 8 digits";
+				break;
+			case "MX":
+				if (digitsOnly.length < 10)
+					return "Mexico phone number must be 10 digits";
+				if (digitsOnly.length > 10)
+					return "Mexico phone number must be exactly 10 digits";
+				break;
+			default:
+				if (digitsOnly.length < 8)
+					return "Phone number must be at least 8 digits";
+				if (digitsOnly.length > 15)
+					return "Phone number must be less than 15 digits";
+		}
 		return "";
 	};
 
@@ -91,25 +182,58 @@ const ContactFormWithMaintenance = () => {
 		return "";
 	};
 
-	const formatPhoneNumber = (value: string) => {
-		// Remove all non-digit characters
+	const formatPhoneNumber = (value: string, countryCode: string) => {
 		const digitsOnly = value.replace(/\D/g, "");
+		const country =
+			countries.find((c) => c.code === countryCode) || countries[2];
 
-		// Format as (XXX) XXX-XXXX for US numbers
-		if (digitsOnly.length >= 10) {
-			return `(${digitsOnly.slice(0, 3)}) ${digitsOnly.slice(
-				3,
-				6
-			)}-${digitsOnly.slice(6, 10)}`;
-		} else if (digitsOnly.length >= 6) {
-			return `(${digitsOnly.slice(0, 3)}) ${digitsOnly.slice(
-				3,
-				6
-			)}-${digitsOnly.slice(6)}`;
-		} else if (digitsOnly.length >= 3) {
-			return `(${digitsOnly.slice(0, 3)}) ${digitsOnly.slice(3)}`;
+		switch (countryCode) {
+			case "US":
+				// US format: (XXX) XXX-XXXX
+				if (digitsOnly.length >= 10) {
+					return `(${digitsOnly.slice(0, 3)}) ${digitsOnly.slice(
+						3,
+						6
+					)}-${digitsOnly.slice(6, 10)}`;
+				} else if (digitsOnly.length >= 6) {
+					return `(${digitsOnly.slice(0, 3)}) ${digitsOnly.slice(
+						3,
+						6
+					)}-${digitsOnly.slice(6)}`;
+				} else if (digitsOnly.length >= 3) {
+					return `(${digitsOnly.slice(0, 3)}) ${digitsOnly.slice(3)}`;
+				}
+				return digitsOnly;
+
+			case "GT":
+				// Guatemala format: (XXXX) XXXX
+				if (digitsOnly.length >= 8) {
+					return `(${digitsOnly.slice(0, 4)}) ${digitsOnly.slice(4, 8)}`;
+				} else if (digitsOnly.length >= 4) {
+					return `(${digitsOnly.slice(0, 4)}) ${digitsOnly.slice(4)}`;
+				}
+				return digitsOnly;
+
+			case "MX":
+				// Mexico format: XX XXXX XXXX
+				if (digitsOnly.length >= 10) {
+					return `${digitsOnly.slice(0, 2)} ${digitsOnly.slice(
+						2,
+						6
+					)} ${digitsOnly.slice(6, 10)}`;
+				} else if (digitsOnly.length >= 6) {
+					return `${digitsOnly.slice(0, 2)} ${digitsOnly.slice(
+						2,
+						6
+					)} ${digitsOnly.slice(6)}`;
+				} else if (digitsOnly.length >= 2) {
+					return `${digitsOnly.slice(0, 2)} ${digitsOnly.slice(2)}`;
+				}
+				return digitsOnly;
+
+			default:
+				return digitsOnly;
 		}
-		return digitsOnly;
 	};
 
 	const handleInputChange = (
@@ -118,15 +242,26 @@ const ContactFormWithMaintenance = () => {
 		>
 	) => {
 		const { name, value } = e.target;
-
 		let processedValue = value;
 
-		// Special handling for phone number formatting
 		if (name === "phone") {
-			processedValue = formatPhoneNumber(value);
+			processedValue = formatPhoneNumber(value, formData.countryCode);
 		}
 
-		// Character limits
+		// Handle country code change - reset phone when country changes
+		if (name === "countryCode") {
+			setFormData((prev) => ({
+				...prev,
+				[name]: processedValue,
+				phone: "", // Reset phone when country changes
+			}));
+			// Clear phone error when country changes
+			if (touched.phone) {
+				setErrors((prev) => ({ ...prev, phone: "" }));
+			}
+			return;
+		}
+
 		if (name === "name" && value.length > 50) return;
 		if (name === "email" && value.length > 100) return;
 		if (name === "message" && value.length > 500) return;
@@ -136,7 +271,10 @@ const ContactFormWithMaintenance = () => {
 			[name]: processedValue,
 		}));
 
-		// Real-time validation
+		if (submitError) {
+			setSubmitError(null);
+		}
+
 		if (touched[name as keyof typeof touched]) {
 			let error = "";
 			switch (name) {
@@ -147,7 +285,7 @@ const ContactFormWithMaintenance = () => {
 					error = validateEmail(processedValue);
 					break;
 				case "phone":
-					error = validatePhone(processedValue);
+					error = validatePhone(processedValue, formData.countryCode);
 					break;
 				case "message":
 					error = validateMessage(processedValue);
@@ -163,7 +301,6 @@ const ContactFormWithMaintenance = () => {
 		const { name } = e.target;
 		setTouched((prev) => ({ ...prev, [name]: true }));
 
-		// Validate on blur
 		let error = "";
 		switch (name) {
 			case "name":
@@ -173,7 +310,7 @@ const ContactFormWithMaintenance = () => {
 				error = validateEmail(formData.email);
 				break;
 			case "phone":
-				error = validatePhone(formData.phone);
+				error = validatePhone(formData.phone, formData.countryCode);
 				break;
 			case "message":
 				error = validateMessage(formData.message);
@@ -182,13 +319,17 @@ const ContactFormWithMaintenance = () => {
 		setErrors((prev) => ({ ...prev, [name]: error }));
 	};
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		setIsSubmitting(true);
+		setSubmitError(null);
+		setIsSuccess(false);
 
 		// Validate all fields
 		const nameError = validateName(formData.name);
 		const emailError = validateEmail(formData.email);
-		const phoneError = validatePhone(formData.phone);
+		const phoneError = validatePhone(formData.phone, formData.countryCode);
 		const messageError = validateMessage(formData.message);
 
 		setErrors({
@@ -206,14 +347,58 @@ const ContactFormWithMaintenance = () => {
 		});
 
 		if (nameError || emailError || phoneError || messageError) {
-			alert("Please fix the form errors before submitting.");
+			setSubmitError("Please fix the form errors before submitting.");
+			setIsSubmitting(false);
 			return;
 		}
 
-		// Form is disabled, so this won't actually submit
-		alert(
-			"Form is currently disabled due to maintenance. Please use alternative contact methods."
-		);
+		try {
+			// Submit using the email mutation
+			const result = await emailMutation.submitContactForm({
+				name: formData.name,
+				email: formData.email,
+				phone: formData.phone
+					? formatInternationalPhone(formData.phone, formData.countryCode)
+					: undefined,
+				eventType: formData.eventType || undefined,
+				eventDate: formData.eventDate || undefined,
+				message: formData.message,
+			});
+
+			if (result.success) {
+				setIsSuccess(true);
+				// Reset form
+				setFormData({
+					name: "",
+					email: "",
+					phone: "",
+					countryCode: "US",
+					eventType: "",
+					eventDate: "",
+					message: "",
+				});
+				setTouched({
+					name: false,
+					email: false,
+					phone: false,
+					message: false,
+				});
+				setErrors({
+					name: "",
+					email: "",
+					phone: "",
+					message: "",
+				});
+			} else {
+				setSubmitError(result.message);
+			}
+		} catch (error) {
+			setSubmitError(
+				"Something went wrong. Please try again or use alternative contact methods."
+			);
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	const isFieldValid = (fieldName: keyof typeof errors) => {
@@ -228,310 +413,9 @@ const ContactFormWithMaintenance = () => {
 		return touched[fieldName] && errors[fieldName] !== "";
 	};
 
-	return (
-		<div className="max-w-2xl mx-auto">
-			{/* Maintenance Notice */}
-			<div className="bg-[#F8F9FA] border border-[#E9ECEF] rounded-lg p-4 mb-6">
-				<p className="text-[#6C757D] text-sm font-medium text-center">
-					⚠️ Form temporarily disabled due to maintenance. Please{" "}
-					<a
-						href="tel:+19092681246"
-						className="text-[#343434] hover:underline font-semibold">
-						call us
-					</a>
-					,{" "}
-					<button
-						onClick={openCalendly}
-						className="text-[#343434] hover:underline font-semibold bg-transparent border-none p-0 cursor-pointer">
-						book a consultation
-					</button>
-					, or email us at{" "}
-					<a
-						href="mailto:blktieevent@gmail.com"
-						className="text-[#343434] hover:underline font-semibold">
-						blktieevent@gmail.com
-					</a>
-				</p>
-			</div>
-
-			{/* Contact Form */}
-			<div className="bg-white border border-[#E9ECEF] rounded-2xl p-8">
-				<h2 className="text-3xl font-black text-black font-['var(--font-tangerine)'] mb-6 text-center">
-					Contact Form
-				</h2>
-
-				<form onSubmit={handleSubmit} className="space-y-6" noValidate>
-					{/* Name Field */}
-					<div>
-						<label
-							htmlFor="name"
-							className="block text-sm font-medium text-[#343434] mb-2">
-							Full Name *
-						</label>
-						<input
-							type="text"
-							id="name"
-							name="name"
-							value={formData.name}
-							onChange={handleInputChange}
-							onBlur={handleBlur}
-							className={`w-full px-4 py-3 border rounded-lg bg-white text-[#343434] transition-all duration-300 ${
-								isFieldValid("name")
-									? "border-green-500 focus:border-green-600 focus:ring-1 focus:ring-green-500"
-									: isFieldInvalid("name")
-									? "border-red-500 focus:border-red-600 focus:ring-1 focus:ring-red-500"
-									: "border-[#E9ECEF] focus:border-[#6C757D] focus:ring-1 focus:ring-[#6C757D]"
-							}`}
-							placeholder="Enter your full name"
-							maxLength={50}
-							required
-						/>
-						{errors.name && touched.name && (
-							<p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-								<span>⚠️</span> {errors.name}
-							</p>
-						)}
-						<p className="text-[#8E8B82] text-xs mt-1">
-							{formData.name.length}/50 characters
-						</p>
-					</div>
-
-					{/* Email Field */}
-					<div>
-						<label
-							htmlFor="email"
-							className="block text-sm font-medium text-[#343434] mb-2">
-							Email Address *
-						</label>
-						<input
-							type="email"
-							id="email"
-							name="email"
-							value={formData.email}
-							onChange={handleInputChange}
-							onBlur={handleBlur}
-							className={`w-full px-4 py-3 border rounded-lg bg-white text-[#343434] transition-all duration-300 ${
-								isFieldValid("email")
-									? "border-green-500 focus:border-green-600 focus:ring-1 focus:ring-green-500"
-									: isFieldInvalid("email")
-									? "border-red-500 focus:border-red-600 focus:ring-1 focus:ring-red-500"
-									: "border-[#E9ECEF] focus:border-[#6C757D] focus:ring-1 focus:ring-[#6C757D]"
-							}`}
-							placeholder="Enter your email address"
-							maxLength={100}
-							required
-						/>
-						{errors.email && touched.email && (
-							<p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-								<span>⚠️</span> {errors.email}
-							</p>
-						)}
-						<p className="text-[#8E8B82] text-xs mt-1">
-							{formData.email.length}/100 characters
-						</p>
-					</div>
-
-					{/* Phone Field */}
-					<div>
-						<label
-							htmlFor="phone"
-							className="block text-sm font-medium text-[#343434] mb-2">
-							Phone Number
-						</label>
-						<input
-							type="tel"
-							id="phone"
-							name="phone"
-							value={formData.phone}
-							onChange={handleInputChange}
-							onBlur={handleBlur}
-							className={`w-full px-4 py-3 border rounded-lg bg-white text-[#343434] transition-all duration-300 ${
-								formData.phone && isFieldValid("phone")
-									? "border-green-500 focus:border-green-600 focus:ring-1 focus:ring-green-500"
-									: isFieldInvalid("phone")
-									? "border-red-500 focus:border-red-600 focus:ring-1 focus:ring-red-500"
-									: "border-[#E9ECEF] focus:border-[#6C757D] focus:ring-1 focus:ring-[#6C757D]"
-							}`}
-							placeholder="(555) 123-4567"
-						/>
-						{errors.phone && touched.phone && (
-							<p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-								<span>⚠️</span> {errors.phone}
-							</p>
-						)}
-						<p className="text-[#8E8B82] text-xs mt-1">
-							Optional - Auto-formatted US phone number
-						</p>
-					</div>
-
-					{/* Event Type Field */}
-					<div>
-						<label
-							htmlFor="eventType"
-							className="block text-sm font-medium text-[#343434] mb-2">
-							Event Type
-						</label>
-						<select
-							id="eventType"
-							name="eventType"
-							value={formData.eventType}
-							onChange={handleInputChange}
-							className="w-full px-4 py-3 border border-[#E9ECEF] rounded-lg bg-white text-[#343434] focus:border-[#6C757D] focus:ring-1 focus:ring-[#6C757D] transition-colors duration-300">
-							<option value="">Select event type</option>
-							<option value="wedding">Wedding</option>
-							<option value="birthday">Birthday Party</option>
-							<option value="corporate">Corporate Event</option>
-							<option value="anniversary">Anniversary</option>
-							<option value="graduation">Graduation</option>
-							<option value="other">Other</option>
-						</select>
-					</div>
-
-					{/* Event Date Field */}
-					<div>
-						<label
-							htmlFor="eventDate"
-							className="block text-sm font-medium text-[#343434] mb-2">
-							Event Date
-						</label>
-						<input
-							type="date"
-							id="eventDate"
-							name="eventDate"
-							value={formData.eventDate}
-							onChange={handleInputChange}
-							min={new Date().toISOString().split("T")[0]} // Prevent past dates
-							className="w-full px-4 py-3 border border-[#E9ECEF] rounded-lg bg-white text-[#343434] focus:border-[#6C757D] focus:ring-1 focus:ring-[#6C757D] transition-colors duration-300"
-						/>
-					</div>
-
-					{/* Message Field */}
-					<div>
-						<label
-							htmlFor="message"
-							className="block text-sm font-medium text-[#343434] mb-2">
-							Message
-						</label>
-						<textarea
-							id="message"
-							name="message"
-							value={formData.message}
-							onChange={handleInputChange}
-							onBlur={handleBlur}
-							rows={4}
-							className={`w-full px-4 py-3 border rounded-lg bg-white text-[#343434] transition-all duration-300 resize-vertical ${
-								formData.message && isFieldValid("message")
-									? "border-green-500 focus:border-green-600 focus:ring-1 focus:ring-green-500"
-									: isFieldInvalid("message")
-									? "border-red-500 focus:border-red-600 focus:ring-1 focus:ring-red-500"
-									: "border-[#E9ECEF] focus:border-[#6C757D] focus:ring-1 focus:ring-[#6C757D]"
-							}`}
-							placeholder="Tell us about your event requirements, venue, guest count, music preferences, special requests, etc..."
-							maxLength={500}></textarea>
-						{errors.message && touched.message && (
-							<p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-								<span>⚠️</span> {errors.message}
-							</p>
-						)}
-						<p className="text-[#8E8B82] text-xs mt-1">
-							{formData.message.length}/500 characters
-						</p>
-					</div>
-
-					{/* Submit Button - Disabled */}
-					<div className="pt-4">
-						<button
-							type="submit"
-							disabled={true}
-							className="w-full bg-[#F8F9FA] text-[#8E8B82] border border-[#E9ECEF] px-8 py-4 rounded-lg font-bold text-lg opacity-50 cursor-not-allowed transition-all duration-300">
-							Submit (Currently Disabled)
-						</button>
-
-						{/* Alternative Action Buttons */}
-						<div className="grid md:grid-cols-2 gap-4 mt-4">
-							<button
-								type="button"
-								onClick={openCalendly}
-								className="bg-[#F8F9FA] text-[#343434] border border-[#E9ECEF] px-6 py-3 rounded-lg font-medium hover:bg-[#E9ECEF] hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
-								<Calendar className="w-5 h-5" />
-								Book Call Instead
-							</button>
-
-							<a
-								href="tel:+19092681246"
-								className="bg-[#F8F9FA] text-[#343434] border border-[#E9ECEF] px-6 py-3 rounded-lg font-medium hover:bg-[#E9ECEF] hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
-								<Phone className="w-5 h-5" />
-								Call Now
-							</a>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-	);
-};
-
-export default function ContactPage() {
-	const [calendlyLoaded, setCalendlyLoaded] = useState(false);
-
-	// Load Calendly scripts and initialize
-	useEffect(() => {
-		// Load CSS
-		const link = document.createElement("link");
-		link.href = "https://assets.calendly.com/assets/external/widget.css";
-		link.rel = "stylesheet";
-		document.head.appendChild(link);
-
-		// Load Script
-		const script = document.createElement("script");
-		script.src = "https://assets.calendly.com/assets/external/widget.js";
-		script.async = true;
-		script.onload = () => {
-			setCalendlyLoaded(true);
-
-			// Initialize badge widget (floating button)
-			if (window.Calendly) {
-				window.Calendly.initBadgeWidget({
-					url: "https://calendly.com/blktieevent/welcome-to-black-tie-events",
-					text: "📅 Book Free Consultation",
-					color: "#6C757D", // Gray color for white theme
-					textColor: "#FFFFFF", // White text
-					branding: false,
-				});
-			}
-		};
-		document.head.appendChild(script);
-
-		return () => {
-			// Cleanup
-			const existingScript = document.querySelector(
-				'script[src="https://assets.calendly.com/assets/external/widget.js"]'
-			);
-			const existingLink = document.querySelector(
-				'link[href="https://assets.calendly.com/assets/external/widget.css"]'
-			);
-			if (existingScript) document.head.removeChild(existingScript);
-			if (existingLink) document.head.removeChild(existingLink);
-
-			// Remove badge widget
-			const badgeWidget = document.querySelector(".calendly-badge-widget");
-			if (badgeWidget) badgeWidget.remove();
-		};
-	}, []);
-
-	// Function to open Calendly popup
-	const openCalendlyPopup = () => {
-		if (window.Calendly) {
-			window.Calendly.initPopupWidget({
-				url: "https://calendly.com/blktieevent/welcome-to-black-tie-events",
-			});
-		} else {
-			// Fallback to opening in new tab if widget isn't loaded
-			window.open(
-				"https://calendly.com/blktieevent/welcome-to-black-tie-events",
-				"_blank"
-			);
-		}
+	const resetForm = () => {
+		setIsSuccess(false);
+		setSubmitError(null);
 	};
 
 	return (
@@ -589,7 +473,7 @@ export default function ContactPage() {
 						Contact Information
 					</h2>
 
-					<div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mb-16">
+					<div className="flex flex-wrap justify-center gap-6 mb-16">
 						{/* Schedule Consultation Card */}
 						<button
 							onClick={openCalendlyPopup}
@@ -649,29 +533,326 @@ export default function ContactPage() {
 							<p className="text-[#6C757D] font-semibold">Chat Now</p>
 							<p className="text-[#8E8B82] text-sm mt-2">Instant messaging</p>
 						</a>
-
-						{/* Website */}
-						<a
-							href="https://www.blktieevents.com"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="bg-white border border-[#E9ECEF] rounded-2xl p-6 text-center hover:border-[#6C757D] hover:bg-[#F8F9FA] transition-all duration-300 group hover:scale-105">
-							<div className="w-16 h-16 bg-[#E9ECEF] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-								<MapPin className="w-8 h-8 text-[#6C757D]" />
-							</div>
-							<h3 className="text-lg font-bold mb-2 text-black">
-								Visit Website
-							</h3>
-							<p className="text-[#6C757D] font-semibold">blktieevents.com</p>
-							<p className="text-[#8E8B82] text-sm mt-2">Our main website</p>
-						</a>
 					</div>
 				</div>
 			</section>
 
-			{/* CONTACT FORM with Maintenance Notice */}
+			{/* CONTACT FORM Section */}
 			<section className="py-16 px-6 bg-[#F8F9FA]">
-				<ContactFormWithMaintenance />
+				<div className="max-w-2xl mx-auto">
+					{/* Success Screen */}
+					{isSuccess ? (
+						<div className="bg-white border border-[#E9ECEF] rounded-2xl p-8 text-center">
+							<div className="flex justify-center mb-6">
+								<div className="w-16 h-16 bg-[#F8F9FA] rounded-full flex items-center justify-center">
+									<CheckCircle className="w-8 h-8 text-[#343434]" />
+								</div>
+							</div>
+
+							<h3 className="text-2xl font-bold text-[#343434] mb-4">
+								Message Sent Successfully! 🎉
+							</h3>
+
+							<p className="text-[#6C757D] text-lg mb-6">
+								Thank you for reaching out! We've received your message and will
+								get back to you within 24 hours.
+							</p>
+
+							<div className="space-y-4">
+								<p className="text-[#8E8B82] text-sm">
+									💡 <strong>What's next?</strong> We'll review your event
+									details and contact you with personalized DJ recommendations
+									and pricing.
+								</p>
+
+								<div className="flex flex-col sm:flex-row gap-3 justify-center">
+									<button
+										onClick={resetForm}
+										className="px-6 py-3 bg-[#343434] text-white rounded-lg hover:bg-black transition-colors font-medium">
+										Send Another Message
+									</button>
+
+									<button
+										onClick={openCalendlyPopup}
+										className="px-6 py-3 border border-[#343434] text-[#343434] rounded-lg hover:bg-[#F8F9FA] transition-colors font-medium flex items-center justify-center gap-2">
+										<Calendar className="w-5 h-5" />
+										Book Consultation Instead
+									</button>
+								</div>
+							</div>
+						</div>
+					) : (
+						/* Contact Form */
+						<div className="bg-white border border-b-gray-700 rounded-2xl p-8">
+							<h2 className="text-3xl font-black text-black mb-6 text-center">
+								Contact Form
+							</h2>
+
+							{submitError && (
+								<div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+									<div className="flex">
+										<AlertCircle className="h-5 w-5 text-red-400 mt-0.5 mr-3" />
+										<div>
+											<p className="text-red-700 font-medium">
+												Unable to send message
+											</p>
+											<p className="text-red-600 text-sm mt-1">{submitError}</p>
+										</div>
+									</div>
+								</div>
+							)}
+
+							<form onSubmit={handleSubmit} className="space-y-6" noValidate>
+								{/* Name Field */}
+								<div>
+									<label
+										htmlFor="name"
+										className="block text-sm font-medium text-[#343434] mb-2">
+										Full Name *
+									</label>
+									<input
+										type="text"
+										id="name"
+										name="name"
+										value={formData.name}
+										onChange={handleInputChange}
+										onBlur={handleBlur}
+										disabled={isSubmitting}
+										className={`w-full px-4 py-3 border rounded-lg bg-white text-[#343434] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
+											isFieldValid("name")
+												? "border-green-500 focus:border-green-600 focus:ring-1 focus:ring-green-500"
+												: isFieldInvalid("name")
+												? "border-red-500 focus:border-red-600 focus:ring-1 focus:ring-red-500"
+												: "border-[#E9ECEF] focus:border-[#6C757D] focus:ring-1 focus:ring-[#6C757D]"
+										}`}
+										placeholder="Enter your full name"
+										maxLength={50}
+										required
+									/>
+									{errors.name && touched.name && (
+										<p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+											<span>⚠️</span> {errors.name}
+										</p>
+									)}
+									<p className="text-[#8E8B82] text-xs mt-1">
+										{formData.name.length}/50 characters
+									</p>
+								</div>
+
+								{/* Email Field */}
+								<div>
+									<label
+										htmlFor="email"
+										className="block text-sm font-medium text-[#343434] mb-2">
+										Email Address *
+									</label>
+									<input
+										type="email"
+										id="email"
+										name="email"
+										value={formData.email}
+										onChange={handleInputChange}
+										onBlur={handleBlur}
+										disabled={isSubmitting}
+										className={`w-full px-4 py-3 border rounded-lg bg-white text-[#343434] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
+											isFieldValid("email")
+												? "border-green-500 focus:border-green-600 focus:ring-1 focus:ring-green-500"
+												: isFieldInvalid("email")
+												? "border-red-500 focus:border-red-600 focus:ring-1 focus:ring-red-500"
+												: "border-[#E9ECEF] focus:border-[#6C757D] focus:ring-1 focus:ring-[#6C757D]"
+										}`}
+										placeholder="Enter your email address"
+										maxLength={100}
+										required
+									/>
+									{errors.email && touched.email && (
+										<p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+											<span>⚠️</span> {errors.email}
+										</p>
+									)}
+									<p className="text-[#8E8B82] text-xs mt-1">
+										{formData.email.length}/100 characters
+									</p>
+								</div>
+
+								{/* Country Code Field */}
+								<div>
+									<label
+										htmlFor="countryCode"
+										className="block text-sm font-medium text-[#343434] mb-2">
+										Country
+									</label>
+									<select
+										id="countryCode"
+										name="countryCode"
+										value={formData.countryCode}
+										onChange={handleInputChange}
+										disabled={isSubmitting}
+										className="w-full px-4 py-3 border border-[#E9ECEF] rounded-lg bg-white text-[#343434] focus:border-[#6C757D] focus:ring-1 focus:ring-[#6C757D] transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+										{countriesAlphabetical.map((country) => (
+											<option key={country.code} value={country.code}>
+												{country.name} ({country.dialCode})
+											</option>
+										))}
+									</select>
+								</div>
+
+								{/* Phone Field */}
+								<div>
+									<label
+										htmlFor="phone"
+										className="block text-sm font-medium text-[#343434] mb-2">
+										Phone Number
+									</label>
+									<input
+										type="tel"
+										id="phone"
+										name="phone"
+										value={formData.phone}
+										onChange={handleInputChange}
+										onBlur={handleBlur}
+										disabled={isSubmitting}
+										className={`w-full px-4 py-3 border rounded-lg bg-white text-[#343434] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
+											formData.phone && isFieldValid("phone")
+												? "border-green-500 focus:border-green-600 focus:ring-1 focus:ring-green-500"
+												: isFieldInvalid("phone")
+												? "border-red-500 focus:border-red-600 focus:ring-1 focus:ring-red-500"
+												: "border-[#E9ECEF] focus:border-[#6C757D] focus:ring-1 focus:ring-[#6C757D]"
+										}`}
+										placeholder={currentCountry.placeholder}
+									/>
+									{errors.phone && touched.phone && (
+										<p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+											<span>⚠️</span> {errors.phone}
+										</p>
+									)}
+									<p className="text-[#8E8B82] text-xs mt-1">
+										Optional - Format: {currentCountry.format} (
+										{currentCountry.dialCode})
+									</p>
+								</div>
+
+								{/* Event Type Field */}
+								<div>
+									<label
+										htmlFor="eventType"
+										className="block text-sm font-medium text-[#343434] mb-2">
+										Event Type
+									</label>
+									<select
+										id="eventType"
+										name="eventType"
+										value={formData.eventType}
+										onChange={handleInputChange}
+										disabled={isSubmitting}
+										className="w-full px-4 py-3 border border-[#E9ECEF] rounded-lg bg-white text-[#343434] focus:border-[#6C757D] focus:ring-1 focus:ring-[#6C757D] transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+										<option value="">Select event type</option>
+										<option value="WEDDING">Wedding</option>
+										<option value="BIRTHDAY">Birthday Party</option>
+										<option value="CORPORATE">Corporate Event</option>
+										<option value="ANNIVERSARY">Anniversary</option>
+										<option value="GRADUATION">Graduation</option>
+										<option value="PRIVATE_PARTY">Private Party</option>
+										<option value="OTHER">Other</option>
+									</select>
+								</div>
+
+								{/* Event Date Field */}
+								<div>
+									<label
+										htmlFor="eventDate"
+										className="block text-sm font-medium text-[#343434] mb-2">
+										Event Date
+									</label>
+									<input
+										type="date"
+										id="eventDate"
+										name="eventDate"
+										value={formData.eventDate}
+										onChange={handleInputChange}
+										disabled={isSubmitting}
+										min={new Date().toISOString().split("T")[0]}
+										className="w-full px-4 py-3 border border-[#E9ECEF] rounded-lg bg-white text-[#343434] focus:border-[#6C757D] focus:ring-1 focus:ring-[#6C757D] transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+									/>
+								</div>
+
+								{/* Message Field */}
+								<div>
+									<label
+										htmlFor="message"
+										className="block text-sm font-medium text-[#343434] mb-2">
+										Message
+									</label>
+									<textarea
+										id="message"
+										name="message"
+										value={formData.message}
+										onChange={handleInputChange}
+										onBlur={handleBlur}
+										disabled={isSubmitting}
+										rows={4}
+										className={`w-full px-4 py-3 border rounded-lg bg-white text-[#343434] transition-all duration-300 resize-vertical disabled:opacity-50 disabled:cursor-not-allowed ${
+											formData.message && isFieldValid("message")
+												? "border-green-500 focus:border-green-600 focus:ring-1 focus:ring-green-500"
+												: isFieldInvalid("message")
+												? "border-red-500 focus:border-red-600 focus:ring-1 focus:ring-red-500"
+												: "border-[#E9ECEF] focus:border-[#6C757D] focus:ring-1 focus:ring-[#6C757D]"
+										}`}
+										placeholder="Tell us about your event requirements, venue, guest count, music preferences, special requests, etc..."
+										maxLength={500}
+									/>
+									{errors.message && touched.message && (
+										<p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+											<span>⚠️</span> {errors.message}
+										</p>
+									)}
+									<p className="text-[#8E8B82] text-xs mt-1">
+										{formData.message.length}/500 characters
+									</p>
+								</div>
+
+								{/* Submit Button */}
+								<div className="pt-4">
+									<button
+										type="submit"
+										disabled={isSubmitting}
+										className="w-full bg-[#343434] text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-[#2c2c2c] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-3">
+										{isSubmitting ? (
+											<>
+												<Loader2 className="w-5 h-5 animate-spin" />
+												Sending Message...
+											</>
+										) : (
+											<>
+												<Mail className="w-5 h-5" />
+												Send Message
+											</>
+										)}
+									</button>
+
+									{/* Alternative Action Buttons */}
+									<div className="grid md:grid-cols-2 gap-4 mt-4">
+										<button
+											type="button"
+											onClick={openCalendlyPopup}
+											disabled={isSubmitting}
+											className="bg-white text-black border border-black px-6 py-3 rounded-lg font-medium hover:bg-black hover:text-white transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50">
+											<Calendar className="w-5 h-5" />
+											Book Call Instead
+										</button>
+
+										<a
+											href="tel:+19092681246"
+											className="bg-white text-black border border-black px-6 py-3 rounded-lg font-medium hover:bg-black hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
+											<Phone className="w-5 h-5" />
+											Call Now
+										</a>
+									</div>
+								</div>
+							</form>
+						</div>
+					)}
+				</div>
 			</section>
 
 			{/* Business Hours & Info */}
@@ -690,17 +871,33 @@ export default function ContactPage() {
 							</div>
 							<div className="space-y-2 text-[#6C757D]">
 								<div className="flex justify-between">
-									<span>Monday - Friday:</span>
-									<span>9:00 AM - 8:00 PM</span>
+									<span>Monday - Sunday</span>
+									<span>8:00 AM - 9:00 PM</span>
+								</div>
+								{/* <div className="flex justify-between">
+									<span>Tuesday:</span>
+									<span>3:00 PM - 9:00 PM</span>
+								</div>
+								<div className="flex justify-between">
+									<span>Wednesday:</span>
+									<span>8:00 AM - 9:00 PM</span>
+								</div>
+								<div className="flex justify-between">
+									<span>Thursday:</span>
+									<span>5:00 PM - 9:00 PM</span>
+								</div>
+								<div className="flex justify-between">
+									<span>Friday:</span>
+									<span>8:00 AM - 6:00 PM</span>
 								</div>
 								<div className="flex justify-between">
 									<span>Saturday:</span>
-									<span>10:00 AM - 6:00 PM</span>
+									<span>8:00 AM - 6:00 PM</span>
 								</div>
 								<div className="flex justify-between">
 									<span>Sunday:</span>
-									<span>12:00 PM - 6:00 PM</span>
-								</div>
+									<span>8:00 AM - 9:00 PM</span>
+								</div> */}
 								<div className="mt-4 pt-4 border-t border-[#E9ECEF]">
 									<p className="text-[#343434] font-semibold mb-2">
 										Emergency Events: 24/7 Available

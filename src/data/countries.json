@@ -1,0 +1,138 @@
+[
+  {
+    "code": "AD",
+    "name": "Andorra",
+    "dialCode": "+376",
+    "format": "### ###",
+    "placeholder": "312 345",
+    "digitCount": 6
+  },
+  {
+    "code": "AR", 
+    "name": "Argentina",
+    "dialCode": "+54",
+    "format": "## #### ####",
+    "placeholder": "11 1234 5678", 
+    "digitCount": 10
+  },
+  {
+    "code": "AU",
+    "name": "Australia", 
+    "dialCode": "+61",
+    "format": "### ### ###",
+    "placeholder": "412 345 678",
+    "digitCount": 9
+  },
+  {
+    "code": "BR",
+    "name": "Brazil",
+    "dialCode": "+55", 
+    "format": "## #####-####",
+    "placeholder": "11 91234-5678",
+    "digitCount": 11
+  },
+  {
+    "code": "CA",
+    "name": "Canada",
+    "dialCode": "+1",
+    "format": "(###) ###-####", 
+    "placeholder": "(416) 123-4567",
+    "digitCount": 10
+  },
+  {
+    "code": "CO",
+    "name": "Colombia",
+    "dialCode": "+57",
+    "format": "### ### ####",
+    "placeholder": "300 123 4567",
+    "digitCount": 10
+  },
+  {
+    "code": "CR",
+    "name": "Costa Rica", 
+    "dialCode": "+506",
+    "format": "#### ####",
+    "placeholder": "8312 3456",
+    "digitCount": 8
+  },
+  {
+    "code": "ES",
+    "name": "Spain",
+    "dialCode": "+34",
+    "format": "### ### ###",
+    "placeholder": "612 345 678", 
+    "digitCount": 9
+  },
+  {
+    "code": "FR",
+    "name": "France",
+    "dialCode": "+33", 
+    "format": "## ## ## ## ##",
+    "placeholder": "06 12 34 56 78",
+    "digitCount": 10
+  },
+  {
+    "code": "GT",
+    "name": "Guatemala",
+    "dialCode": "+502",
+    "format": "#### ####",
+    "placeholder": "5555 1234", 
+    "digitCount": 8
+  },
+  {
+    "code": "IT",
+    "name": "Italy",
+    "dialCode": "+39",
+    "format": "### ### ####", 
+    "placeholder": "320 123 4567",
+    "digitCount": 10
+  },
+  {
+    "code": "MX",
+    "name": "Mexico",
+    "dialCode": "+52",
+    "format": "## #### ####",
+    "placeholder": "55 1234 5678",
+    "digitCount": 10
+  },
+  {
+    "code": "PA",
+    "name": "Panama", 
+    "dialCode": "+507",
+    "format": "#### ####",
+    "placeholder": "6123 4567",
+    "digitCount": 8
+  },
+  {
+    "code": "PE",
+    "name": "Peru",
+    "dialCode": "+51",
+    "format": "### ### ###",
+    "placeholder": "987 654 321", 
+    "digitCount": 9
+  },
+  {
+    "code": "PT", 
+    "name": "Portugal",
+    "dialCode": "+351",
+    "format": "### ### ###",
+    "placeholder": "912 345 678",
+    "digitCount": 9
+  },
+  {
+    "code": "US",
+    "name": "United States", 
+    "dialCode": "+1",
+    "format": "(###) ###-####",
+    "placeholder": "(555) 123-4567",
+    "digitCount": 10
+  },
+  {
+    "code": "GB",
+    "name": "United Kingdom",
+    "dialCode": "+44", 
+    "format": "##### ######",
+    "placeholder": "07700 900123",
+    "digitCount": 11
+  }
+]
