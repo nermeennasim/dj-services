@@ -11,10 +11,5 @@
       "src": "/(.*)",
       "dest": "src/server.ts"
     }
-  ],
-  "env": {
-    "SENDGRID_API_KEY": "@sendgrid-api-key",
-    "FROM_EMAIL": "@from-email",
-    "PUBLIC_BASE_URL": "@public-base-url"
-  }
+  ]
 }
