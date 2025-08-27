@@ -29,9 +29,10 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="en">
+		<html lang="en" data-scroll-behavior="smooth">
 			<body
-				className={`${inter.className} ${tangerine.variable} antialiased bg-white`}>
+				className={`${inter.className} ${tangerine.variable} antialiased bg-white`}
+				suppressHydrationWarning={true}>
 				<HideNextJSIndicator />
 				{/* Banner stays full width */}
 

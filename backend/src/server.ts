@@ -1,70 +1,78 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
-import rateLimit from 'express-rate-limit';
-import emailRoutes from './routes/emailRoutes';
+import dotenv from 'dotenv';
+import { emailService, ContactFormData } from './services/emailService';
 
-const app = express();
+dotenv.config();
 
-// Trust proxy for Vercel
-app.set('trust proxy', 1);
+export const app = express();
+const PORT = process.env.PORT || 8000;
 
-// CORS Configuration
+// Single CORS configuration
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'https://www.blktieevents.com', // Replace with your actual frontend URL
-    'https://blktieevents.com',],
+  origin: ['http://localhost:3001', 'http://localhost:3000', 'http://localhost:8000'],
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200 // For legacy browser support
 }));
 
+// Parse JSON bodies
 app.use(express.json({ limit: '10mb' }));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
-  message: {
-    success: false,
-    message: 'Too many requests from this IP, please try again later.',
-  },
+// Handle preflight requests explicitly
+app.options('*', cors());
+
+// Contact endpoint
+app.post('/api/contact', async (req, res) => {
+  try {
+    console.log('Received contact form submission:', {
+      name: req.body.name,
+      email: req.body.email,
+      hasMessage: !!req.body.message
+    });
+
+    const result = await emailService.sendContactFormEmail(req.body as ContactFormData);
+    
+    if (!result) {
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Failed to send message. Please try again.' 
+      });
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      message: "Thank you for your message! We'll get back to you within 24 hours." 
+    });
+
+  } catch (err: any) {
+    console.error('Contact form error:', err?.message ?? err);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Internal Server Error. Please try again later.' 
+    });
+  }
 });
-app.use(limiter);
 
-// Routes
-app.use('/api/emails', emailRoutes);
-
-// Health check
-app.get('/api/health', (req: Request, res: Response) => {
-  res.json({
+// Health check endpoint
+app.get('/api/health', (_req, res) => {
+  res.status(200).json({
     status: 'OK',
     service: 'DJ Services Email API',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
-    sendgridConfigured: !!process.env.SENDGRID_API_KEY
+    sendgridConfigured: !!process.env.SENDGRID_API_KEY,
+    publicBaseUrl: process.env.PUBLIC_BASE_URL ?? null,
   });
 });
 
-// Root route
-app.get('/', (req: Request, res: Response) => {
-  res.json({
-    message: 'DJ Services Backend API',
-    version: '1.0.0',
-    endpoints: {
-      health: '/api/health',
-      contact: '/api/emails/contact'
-    }
-  });
-});
-
-const PORT = process.env.PORT || 8000;
-
-// For local development
-if (process.env.NODE_ENV !== 'production') {
+// Start server
+if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📧 Email service ready`);
+    console.log(`🚀 Local server running at http://localhost:${PORT}`);
+    console.log(`📧 SendGrid configured: ${!!process.env.SENDGRID_API_KEY}`);
+    console.log(`🌐 CORS enabled for: http://localhost:3001, http://localhost:3000`);
   });
 }
 
-// IMPORTANT: Export default for Vercel
 export default app;

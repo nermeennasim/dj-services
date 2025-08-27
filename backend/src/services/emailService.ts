@@ -17,9 +17,19 @@ export interface ContactFormData {
   message: string;
 }
 
-const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
+// Fix the PUBLIC_BASE_URL logic
+const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || 
+  (process.env.NODE_ENV === 'production' 
+    ? 'https://www.blktieevents.com' 
+    : 'https://www.blktieevents.com'
+    
+    // Your frontend port//add another port to PUBLIC Base URL?
+  );
+  //add another port to PUBLIC Base URL?/
+
 const LOGO_PRIMARY = `${PUBLIC_BASE_URL}/logo.png`;
 const LOGO_WORDMARK_ON_BLACK = `${PUBLIC_BASE_URL}/logo_cursive_black_tie_events_black_background.png`;
+
 
 const BRAND = {
   name: 'Black Tie Events',
@@ -240,29 +250,45 @@ class EmailService {
     ].join('\n');
 
   // ---------- PUBLIC METHODS ----------
-  async sendContactFormEmail(data: ContactFormData): Promise<boolean> {
-    try {
-      const { name, email, eventType, eventDate } = data;
+ // In emailService.ts, modify the sendContactFormEmail method:
+async sendContactFormEmail(data: ContactFormData, options?: {
+    publicBaseUrl?: string;
+    logoPrimary?: string;
+    logoWordmarkOnBlack?: string;
+  }): Promise<boolean> {
+  console.log('=== EMAIL SERVICE DEBUG ===');
+  console.log('PUBLIC_BASE_URL:', PUBLIC_BASE_URL);
+  console.log('LOGO_PRIMARY:', LOGO_PRIMARY);
+  console.log('LOGO_WORDMARK_ON_BLACK:', LOGO_WORDMARK_ON_BLACK);
+  console.log('Form data:', data);
+  
+  try {
+    const { name, email, eventType, eventDate } = data;
 
-      // Admin email
-      await sgMail.send({
-        to: this.toEmail,
-        from: this.fromEmail,
-        replyTo: email,
-        subject: `New Booking: ${name}${eventType ? ' • ' + eventType : ''}${eventDate ? ' on ' + eventDate : ''}`,
-        html: this.adminHtml(data),
-        text: this.adminText(data),
-      });
+    // Admin email
+    console.log('Sending admin email to:', this.toEmail);
+    await sgMail.send({
+      to: this.toEmail,
+      from: this.fromEmail,
+      replyTo: email,
+      subject: `New Booking: ${name}${eventType ? ' • ' + eventType : ''}${eventDate ? ' on ' + eventDate : ''}`,
+      html: this.adminHtml(data),
+      text: this.adminText(data),
+    });
 
-      // Auto-reply to client
-      await this.sendAutoReply(email, name);
+    console.log('Admin email sent successfully');
 
-      return true;
-    } catch (error) {
-      console.error('Email service error:', error);
-      return false;
-    }
+    // Auto-reply to client
+    console.log('Sending auto-reply to:', email);
+    await this.sendAutoReply(email, name);
+    console.log('Auto-reply sent successfully');
+
+    return true;
+  } catch (error) {
+    console.error('Email service error:', error);
+    return false;
   }
+}
 
   private async sendAutoReply(clientEmail: string, clientName: string): Promise<void> {
     try {

@@ -7,7 +7,7 @@
 @font-face {
   font-family: 'Moontime';
   src: url('/fonts/MoonTime-Regular.otf') format('opentype'),
-    url('/fonts/MoonTime-Regular.ttf') format('truetype');
+    url('/fonts/Moontime-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }

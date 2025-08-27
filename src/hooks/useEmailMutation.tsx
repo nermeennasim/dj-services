@@ -17,17 +17,17 @@ export class EmailMutation {
 	private apiUrl: string;
 
 	constructor() {
+		// Make sure to set NEXT_PUBLIC_API_URL in frontend .env
 		this.apiUrl =
-			process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+			process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api";
 	}
 
 	async submitContactForm(data: ContactFormData): Promise<EmailResponse> {
 		try {
-			const response = await fetch(`${this.apiUrl}/emails/contact`, {
+			// 🔑 FIXED: remove "emails/"
+			const response = await fetch(`${this.apiUrl}/contact`, {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
+				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(data),
 			});
 
@@ -45,10 +45,7 @@ export class EmailMutation {
 			console.error("Email submission error:", error);
 
 			if (error instanceof Error) {
-				return {
-					success: false,
-					message: error.message,
-				};
+				return { success: false, message: error.message };
 			}
 
 			return {
@@ -61,7 +58,8 @@ export class EmailMutation {
 	// Test backend connection
 	async testConnection(): Promise<boolean> {
 		try {
-			const response = await fetch(`${this.apiUrl}/emails/health`);
+			// 🔑 FIXED: remove "emails/"
+			const response = await fetch(`${this.apiUrl}/health`);
 			return response.ok;
 		} catch (error) {
 			console.error("Backend connection test failed:", error);
