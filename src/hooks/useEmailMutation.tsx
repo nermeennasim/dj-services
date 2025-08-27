@@ -20,11 +20,16 @@ export class EmailMutation {
 		// Make sure to set NEXT_PUBLIC_API_URL in frontend .env
 		this.apiUrl =
 			process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api";
+
+		console.log("Using API URL:", this.apiUrl); // Debug log
 	}
 
 	async submitContactForm(data: ContactFormData): Promise<EmailResponse> {
 		try {
 			// 🔑 FIXED: remove "emails/"
+
+			console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+			console.log("Submitting to:", `${this.apiUrl}/contact`);
 			const response = await fetch(`${this.apiUrl}/contact`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
