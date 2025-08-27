@@ -19,7 +19,7 @@ export class EmailMutation {
 	constructor() {
 		// Make sure to set NEXT_PUBLIC_API_URL in frontend .env
 		this.apiUrl =
-			process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api";
+			process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api";
 
 		console.log("Using API URL:", this.apiUrl); // Debug log
 	}
