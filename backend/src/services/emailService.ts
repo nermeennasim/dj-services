@@ -21,7 +21,7 @@ export interface ContactFormData {
 const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || 
   (process.env.NODE_ENV === 'production' 
     ? 'https://www.blktieevents.com' 
-    : 'https://www.blktieevents.com'
+    : 'https://blktieevents.com'
     
     // Your frontend port//add another port to PUBLIC Base URL?
   );
