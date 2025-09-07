@@ -19,5 +19,4 @@ sgMail
     console.error(error)
   })
 
- // how to run this file
-    // npx ts-node backend/src/utils/testEmail.ts
+ 

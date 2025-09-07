@@ -350,15 +350,8 @@ div[data-nextjs-scroll-focus-boundary],
 }
 
 /* Elegant button styles for white theme */
-.btn-primary {
-  @apply bg-gray-100 text-gray-700 border border-gray-300 px-6 py-3 rounded-lg font-medium;
-  @apply hover:bg-gray-200 hover:text-gray-800 transition-all duration-300;
-}
 
-.btn-secondary {
-  @apply bg-white text-gray-600 border-2 border-gray-400 px-6 py-3 rounded-lg font-medium;
-  @apply hover:bg-gray-100 hover:text-gray-800 transition-all duration-300;
-}
+
 
 /* Gradient text for special headings */
 .gradient-text {
@@ -462,4 +455,41 @@ div[data-nextjs-scroll-focus-boundary],
       transparent 100%);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
+}
+
+.embla {
+  overflow: hidden;
+}
+
+.embla__container {
+  display: flex;
+}
+
+.embla__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.delay-1000 {
+  animation-delay: 1s;
+}
+
+.delay-2000 {
+  animation-delay: 2s;
 }
