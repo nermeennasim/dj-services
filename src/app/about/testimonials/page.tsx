@@ -153,7 +153,7 @@ export default function TestimonialsSection() {
 				{/* Stats */}
 				<div className="mt-16 grid md:grid-cols-3 gap-8 text-center">
 					<div className="bg-white/50 rounded-2xl p-6">
-						<div className="text-3xl font-black text-[#343434] mb-2">500+</div>
+						<div className="text-3xl font-black text-[#343434] mb-2">50+</div>
 						<div className="text-[#6C757D]">Happy Clients</div>
 					</div>
 					<div className="bg-white/50 rounded-2xl p-6">
@@ -161,7 +161,7 @@ export default function TestimonialsSection() {
 						<div className="text-[#6C757D]">Average Rating</div>
 					</div>
 					<div className="bg-white/50 rounded-2xl p-6">
-						<div className="text-3xl font-black text-[#343434] mb-2">1000+</div>
+						<div className="text-3xl font-black text-[#343434] mb-2">100+</div>
 						<div className="text-[#6C757D]">Events Completed</div>
 					</div>
 				</div>

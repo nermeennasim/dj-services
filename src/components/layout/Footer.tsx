@@ -1,5 +1,4 @@
 // Replace lucide-react imports with:
-import { MapPin } from "lucide-react";
 import {
 	FaMusic,
 	FaPhone,
@@ -7,11 +6,9 @@ import {
 	FaEnvelope,
 	FaFacebook,
 	FaInstagram,
-	FaMap,
-	FaMapMarker,
+	FaMapMarkerAlt,
 } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
-
+import { FaMap, FaXTwitter } from "react-icons/fa6";
 export default function Footer() {
 	const currentYear = new Date().getFullYear();
 
@@ -107,7 +104,7 @@ export default function Footer() {
 							</a>
 
 							<div className="flex items-center gap-3 text-[#6C757D]">
-								<FaMapMarker className="w-4 h-4 flex-shrink-0" />
+								<FaMapMarkerAlt className="w-4 h-4 flex-shrink-0" />
 								<span className="text-sm">Southern California</span>
 							</div>
 
