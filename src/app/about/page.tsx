@@ -53,7 +53,7 @@ export default function AboutPage() {
 							</div>
 							{/* Floating Stats */}
 							<div className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-6 shadow-xl">
-								<div className="text-2xl font-black text-[#343434]">500+</div>
+								<div className="text-2xl font-black text-[#343434]">100+</div>
 								<div className="text-sm text-[#6C757D]">Happy Clients</div>
 							</div>
 							<div className="absolute -top-6 -right-6 bg-[#343434] text-white rounded-2xl p-6 shadow-xl">
